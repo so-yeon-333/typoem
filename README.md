@@ -3,7 +3,6 @@
 ![CI](https://github.com/so-yeon-333/typoem/actions/workflows/test.yml/badge.svg)
 
 > *Type + Poem* — A cozy little corner where friends gather to read a daily poem and leave their ink-marks across the page.
-> 
 
 Typoem is a full-stack web application where small groups of close friends gather in private code-based rooms to read one English poem together each day. Users can leave memos on the poem as a whole, attach line-level annotations to specific lines, and look up unfamiliar words through a built-in dictionary.
 
@@ -13,20 +12,20 @@ This project is the team submission for **ITM519 Web Programming (Spring 2026)**
 
 ## Table of Contents
 
-- [Features](https://www.notion.so/368db210f6cf80babf9feb29195ef8a5?pvs=21)
-- [Tech Stack](https://www.notion.so/368db210f6cf80babf9feb29195ef8a5?pvs=21)
-- [Project Structure](https://www.notion.so/368db210f6cf80babf9feb29195ef8a5?pvs=21)
-- [Prerequisites](https://www.notion.so/368db210f6cf80babf9feb29195ef8a5?pvs=21)
-- [Setup](https://www.notion.so/368db210f6cf80babf9feb29195ef8a5?pvs=21)
-- [Environment Variables](https://www.notion.so/368db210f6cf80babf9feb29195ef8a5?pvs=21)
-- [Running the App](https://www.notion.so/368db210f6cf80babf9feb29195ef8a5?pvs=21)
-- [Testing](https://www.notion.so/368db210f6cf80babf9feb29195ef8a5?pvs=21)
-- [API Documentation](https://www.notion.so/368db210f6cf80babf9feb29195ef8a5?pvs=21)
-- [Deployment](https://www.notion.so/368db210f6cf80babf9feb29195ef8a5?pvs=21)
-- [Contributing (Team Members)](https://www.notion.so/368db210f6cf80babf9feb29195ef8a5?pvs=21)
-- [Team](https://www.notion.so/368db210f6cf80babf9feb29195ef8a5?pvs=21)
-- [AI Use Disclosure](https://www.notion.so/368db210f6cf80babf9feb29195ef8a5?pvs=21)
-- [License](https://www.notion.so/368db210f6cf80babf9feb29195ef8a5?pvs=21)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Project Structure](#project-structure)
+- [Prerequisites](#prerequisites)
+- [Setup](#setup)
+- [Environment Variables](#environment-variables)
+- [Running the App](#running-the-app)
+- [Testing](#testing)
+- [API Documentation](#api-documentation)
+- [Deployment](#deployment)
+- [Contributing](#contributing)
+- [Team](#team)
+- [AI Use Disclosure](#ai-use-disclosure)
+- [License](#license)
 
 ---
 
@@ -59,7 +58,7 @@ This project is the team submission for **ITM519 Web Programming (Spring 2026)**
 | Backend | Node.js + Express |
 | Database | SQLite |
 | Authentication | JWT (`jsonwebtoken`) + `bcrypt` |
-| API Documentation | `swagger-ui-express` + `yamljs`  |
+| API Documentation | `swagger-ui-express` + `yamljs` |
 | Testing | Jest + Supertest |
 | CI | GitHub Actions |
 | Deployment | Render (free tier) |
@@ -136,13 +135,13 @@ npm --version
 ## Setup
 
 ```bash
-git clone <https://github.com/so-yeon-333/typoem.git>
+git clone https://github.com/so-yeon-333/typoem.git
 cd typoem
 npm install
 cp .env.example .env
 ```
 
-Then edit `.env` and fill in your values (see [Environment Variables](https://www.notion.so/368db210f6cf80babf9feb29195ef8a5?pvs=21)).
+Then edit `.env` and fill in your values (see [Environment Variables](#environment-variables)).
 
 The database is seeded automatically on first startup. If you want to reset it, delete `typoem.db` and restart.
 
@@ -160,7 +159,6 @@ Create a `.env` file based on `.env.example`:
 | `NODE_ENV` | Environment mode | `development` or `production` |
 
 > ⚠️ **Never commit `.env` to git.** It is listed in `.gitignore`.
-> 
 
 ---
 
@@ -206,7 +204,7 @@ The OpenAPI 3.0 specification is in `openapi.yaml`.
 When the server is running, interactive API documentation is available at:
 
 ```
-<http://localhost:3000/api/docs>
+http://localhost:3000/api/docs
 ```
 
 The docs are generated using `swagger-ui-express` + `yamljs` (Lecture 10 approach).
@@ -228,7 +226,7 @@ While deployment is optional per the project specification (Section 3.6), the ap
 
 ### Running locally as a fallback
 
-If the deployed URL is unavailable, follow the [Setup](https://www.notion.so/368db210f6cf80babf9feb29195ef8a5?pvs=21) and [Running the App](https://www.notion.so/368db210f6cf80babf9feb29195ef8a5?pvs=21) sections.
+If the deployed URL is unavailable, follow the [Setup](#setup) and [Running the App](#running-the-app) sections.
 
 ---
 
@@ -318,4 +316,4 @@ All AI-assisted output is reviewed, understood, and modified by the responsible 
 
 ## License
 
-This project is licensed under the MIT License — see the [LICENSE](https://www.notion.so/LICENSE) file for details.
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
