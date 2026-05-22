@@ -1,8 +1,3 @@
----
-name: Pull Request
-about: Propose changes to the codebase
----
-
 ## Summary
 <!-- One or two sentences describing the change. -->
 
