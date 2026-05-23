@@ -49,8 +49,10 @@ function seed() {
     "Done with the Chart!",
     "Rowing in Eden -"
   ];
+  const insertedLineIds = [];
   lines.forEach((text, i) => {
-    insertLine.run(poem.lastInsertRowid, i + 1, text);
+    const result = insertLine.run(poem.lastInsertRowid, i + 1, text);
+    insertedLineIds.push(result.lastInsertRowid);
   });
 
   // Daily Room Poem
@@ -70,8 +72,8 @@ function seed() {
   const insertAnnotation = db.prepare(`
     INSERT INTO line_annotations (line_id, room_id, user_id, content) VALUES (?, ?, ?, ?)
   `);
-  insertAnnotation.run(1, room.lastInsertRowid, user1.lastInsertRowid, 'The repetition makes it so powerful!');
-  insertAnnotation.run(4, room.lastInsertRowid, user2.lastInsertRowid, 'Luxury — such an interesting word choice here.');
+  insertAnnotation.run(insertedLineIds[0], room.lastInsertRowid, user1.lastInsertRowid, 'This opening question is so striking!');
+  insertAnnotation.run(insertedLineIds[3], room.lastInsertRowid, user2.lastInsertRowid, 'Luxury — such an interesting word choice here.');
 
   console.log('Seed data inserted successfully.');
 }
