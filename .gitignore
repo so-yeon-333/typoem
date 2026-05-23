@@ -145,9 +145,8 @@ vite.config.ts.timestamp-*
 # Typoem specific
 *.db
 *.db-journal
-typoem.db
-typoem.db-shm
-typoem.db-wal
+*.db-shm
+*.db-wal
 
 # Editor
 .vscode/
