@@ -7,11 +7,6 @@ function authenticate(req, res, next) {
     if (!header || !header.startsWith('Bearer ')) return res.status(401).json({error: "missing token"});
     const token = header.slice(7);
 
-    // check wether token exists
-    if (!process.env.JWT_SECRET) {
-        return res.status(500).json({error: "JWT_SECRET env not set"}); // Server error
-    }
-
     // verify token
     try {
         const payload = jwt.verify(token, process.env.JWT_SECRET);

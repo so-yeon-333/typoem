@@ -2,6 +2,12 @@ const express = require('express');
 const path = require('path');
 require('dotenv').config();
 
+// validate required env variables on boot
+if (!process.env.JWT_SECRET) {
+    console.error("JWT_SECRET is required");
+    process.exit(1);
+}
+
 const { initDb } = require('./db');
 const seed = require('./db/seed');
 
