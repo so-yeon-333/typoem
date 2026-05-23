@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 require('dotenv').config();
 
+const { initDb } = require('./db');
 const seed = require('./db/seed');
 
 const app = express();
@@ -16,10 +17,17 @@ app.get('/api/health', (req, res) => {
 const PORT = process.env.PORT || 3000;
 
 if (require.main === module) {
-  seed();
-  app.listen(PORT, () => {
-    console.log(`Typoem running on http://localhost:${PORT}`);
-  });
+  initDb()
+    .then(() => seed())
+    .then(() => {
+      app.listen(PORT, () => {
+        console.log(`Typoem running on http://localhost:${PORT}`);
+      });
+    })
+    .catch((err) => {
+      console.error('Failed to start:', err);
+      process.exit(1);
+    });
 }
 
 module.exports = app;

@@ -145,6 +145,8 @@ vite.config.ts.timestamp-*
 # Typoem specific
 *.db
 *.db-journal
+*.db-shm
+*.db-wal
 
 # Editor
 .vscode/
@@ -154,3 +156,4 @@ vite.config.ts.timestamp-*
 # OS
 .DS_Store
 Thumbs.db
+
