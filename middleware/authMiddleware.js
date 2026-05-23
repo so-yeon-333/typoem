@@ -9,9 +9,9 @@ function authenticate(req, res, next) {
 
     // check wether token exists
     if (!process.env.JWT_SECRET) {
-        return res.status(401).json({error: "JWT_SECRET env not set"});
+        return res.status(500).json({error: "JWT_SECRET env not set"}); // Server error
     }
-    
+
     // verify token
     try {
         const payload = jwt.verify(token, process.env.JWT_SECRET);
