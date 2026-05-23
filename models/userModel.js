@@ -23,3 +23,5 @@ async function create({ username, nickname, password_hash }) { // password comes
         throw err;
     }
 }
+
+module.exports = { findById, findByUsername, create, UsernameTakenError };
