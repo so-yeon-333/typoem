@@ -17,7 +17,7 @@ async function create({ username, nickname, password_hash }) { // password comes
     try {
         return await getDb().run( `INSERT INTO users (username, nickname, password_hash) VALUES (?, ?, ?)`, [username, nickname, password_hash] );  
     } catch (err) {
-        if (err.code === "SQLITE_CONSTRAINT") {
+        if (err.code === "SQLITE_CONSTRAINT" && /UNIQUE/i.test(err.message)) {
             throw new UsernameTakenError(username);
         }
         throw err;
