@@ -24,5 +24,6 @@ jobs:
       - name: Run tests
         env:
           JWT_SECRET: test-secret-for-ci
+          JWT_EXPIRES_IN: 7d
           NODE_ENV: test
         run: npm test

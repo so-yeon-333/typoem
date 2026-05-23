@@ -5,6 +5,10 @@ require('dotenv').config();
 // validate required env variables on boot
 if (!process.env.JWT_SECRET) {
     console.error("JWT_SECRET is required");
+    process.exit(1); // kill run
+}
+if (!process.env.JWT_EXPIRES_IN) {
+    console.error("JWT_EXPIRES_IN is required");
     process.exit(1);
 }
 
