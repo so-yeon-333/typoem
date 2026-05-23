@@ -32,10 +32,10 @@ async function login(req, res) {
         if (!username || !password) return res.status(400).json({ error: "username and password required" });
 
         const user = await model.findByUsername(username); // find user
-        if (!user) return res.status(401).json({error: "Invalid username"});
+        if (!user) return res.status(401).json({error: "Invalid credentials"});
 
         const ok = await bcrypt.compare(password, user.password_hash); // Check password
-        if(!ok) return res.status(401).json({error: "Wrong password"});
+        if(!ok) return res.status(401).json({error: "Invalid credentials"});
 
         // if success; provide tokens
         const token = jwt.sign( // sign a JWT containing the user's id and username
