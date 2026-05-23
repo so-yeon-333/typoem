@@ -1,16 +1,28 @@
-const Database = require('better-sqlite3');
+const sqlite3 = require('sqlite3');
+const sqlite = require('sqlite');
 const path = require('path');
 const fs = require('fs');
 
-const dbPath = process.env.DB_PATH || './typoem.db';
-const db = new Database(dbPath);
+const DB_NAME = process.env.DB_PATH || './typoem.db';
 
-// Enable foreign keys
-db.pragma('journal_mode = WAL');
-db.pragma('foreign_keys = ON');
+let db;
 
-// Run schema on startup
-const schema = fs.readFileSync(path.join(__dirname, 'db/schema.sql'), 'utf8');
-db.exec(schema);
+async function initDb() {
+  db = await sqlite.open({
+    filename: DB_NAME,
+    driver: sqlite3.Database
+  });
 
-module.exports = db;
+  await db.exec('PRAGMA foreign_keys = ON');
+
+  const schema = fs.readFileSync(path.join(__dirname, 'db/schema.sql'), 'utf8');
+  await db.exec(schema);
+
+  return db;
+}
+
+function getDb() {
+  return db;
+}
+
+module.exports = { initDb, getDb };
