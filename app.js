@@ -1,5 +1,10 @@
 const express = require('express');
 const path = require('path');
+
+// for Swagger
+const swaggerUi = require('swagger-ui-express');
+const YAML = require('yamljs');
+
 require('dotenv').config();
 
 // validate required env variables on boot
@@ -26,6 +31,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 // API routes
 app.use('/api/auth', authRouter);
 app.use('/api/users', usersRouter);
+
+// API docs
+const swaggerDocument = YAML.load('./openapi.yaml');
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', app: 'Typoem' });
