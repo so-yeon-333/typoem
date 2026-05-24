@@ -15,10 +15,17 @@ if (!process.env.JWT_EXPIRES_IN) {
 const { initDb } = require('./db');
 const seed = require('./db/seed');
 
+const authRouter = require('./routes/auth');
+const usersRouter = require('./routes/users');
+
 const app = express();
 app.use(express.json());
 
 app.use(express.static(path.join(__dirname, 'public')));
+
+// API routes
+app.use('/api/auth', authRouter);
+app.use('/api/users', usersRouter);
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', app: 'Typoem' });
