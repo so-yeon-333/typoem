@@ -64,8 +64,8 @@ paths:
                   example: jiseop
                 nickname:
                   type: string
-                  minLength: 2
-                  maxLength: 10
+                  minLength: 3
+                  maxLength: 20
                   example: Jiseop
                 password:
                   type: string

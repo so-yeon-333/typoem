@@ -33,7 +33,7 @@ app.use('/api/auth', authRouter);
 app.use('/api/users', usersRouter);
 
 // API docs
-const swaggerDocument = YAML.load('./openapi.yaml');
+const swaggerDocument = YAML.load(path.join(__dirname, 'openapi.yaml'));
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.get('/api/health', (req, res) => {
