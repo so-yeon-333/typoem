@@ -157,3 +157,5 @@ vite.config.ts.timestamp-*
 .DS_Store
 Thumbs.db
 
+# Test coverage reports
+coverage/
