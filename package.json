@@ -37,7 +37,7 @@
   },
   "homepage": "https://github.com/so-yeon-333/typoem#readme",
   "engines": {
-    "node": "20.x"
+    "node": "22.x"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
