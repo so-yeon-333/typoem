@@ -1,20 +1,20 @@
 const request = require('supertest');
 const path = require('path');
 
-// ── use an in-memory DB for every test run ────────────────────────────────────
+// use an in-memory DB for every test run
 process.env.DB_PATH = ':memory:';
 process.env.JWT_SECRET = 'test-secret';
 process.env.JWT_EXPIRES_IN = '1h';
 
 // app must be required AFTER env vars are set
-const app = require('../app');
-const { initDb } = require('../db');
+const app = require('../../app');
+const { initDb } = require('../../db');
 
 beforeAll(async () => {
   await initDb();
 });
 
-// ── POST /api/auth/register ───────────────────────────────────────────────────
+// POST /api/auth/register
 describe('POST /api/auth/register', () => {
   test('201 — creates a new user and returns id/username/nickname', async () => {
     const res = await request(app)
@@ -65,7 +65,7 @@ describe('POST /api/auth/register', () => {
   });
 });
 
-// ── POST /api/auth/login ──────────────────────────────────────────────────────
+// POST /api/auth/login
 describe('POST /api/auth/login', () => {
   beforeAll(async () => {
     // make sure 'carol' exists for login tests
@@ -110,7 +110,7 @@ describe('POST /api/auth/login', () => {
   });
 });
 
-// ── GET /api/users/me ─────────────────────────────────────────────────────────
+// GET /api/users/me
 describe('GET /api/users/me', () => {
   let token;
 

@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 
-// ── mock usersModel before requiring the controller ──────────────────────────
-jest.mock('../models/usersModel', () => {
+// mock usersModel before requiring the controller
+jest.mock('../../models/usersModel', () => {
   class UsernameTakenError extends Error {}
   return {
     UsernameTakenError,
@@ -13,7 +13,7 @@ jest.mock('../models/usersModel', () => {
 const model = require('../models/usersModel');
 const { register, login } = require('../controllers/authController');
 
-// ── helpers ───────────────────────────────────────────────────────────────────
+// helpers
 function makeReq(body = {}) {
   return { body };
 }
@@ -34,7 +34,7 @@ afterEach(() => {
   jest.clearAllMocks();
 });
 
-// ── register ──────────────────────────────────────────────────────────────────
+// register 
 describe('register controller', () => {
   test('201 on valid input', async () => {
     model.create.mockResolvedValue({ lastID: 42 });
@@ -129,7 +129,7 @@ describe('register controller', () => {
   });
 });
 
-// ── login ─────────────────────────────────────────────────────────────────────
+// login
 describe('login controller', () => {
   test('200 with token on valid credentials', async () => {
     const hash = await bcrypt.hash('password123', 1);
