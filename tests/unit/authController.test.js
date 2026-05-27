@@ -10,8 +10,8 @@ jest.mock('../../models/usersModel', () => {
   };
 });
 
-const model = require('../models/usersModel');
-const { register, login } = require('../controllers/authController');
+const model = require('../../models/usersModel');
+const { register, login } = require('../../controllers/authController');
 
 // helpers
 function makeReq(body = {}) {
