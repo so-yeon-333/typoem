@@ -14,6 +14,8 @@ tags:
     description: User registration and login
   - name: Users
     description: Authenticated user profile
+  - name: Rooms
+    description: Private rooms with invite codes
 
 components:
   securitySchemes:
@@ -42,6 +44,52 @@ components:
         error:
           type: string
           example: "username already exists"
+    
+    Room:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "English Lit Study"
+        description:
+          type: string
+          nullable: true
+          example: "Our daily poetry room"
+        invite_code:
+          type: string
+          example: "ABC123"
+        owner_id:
+          type: integer
+          example: 1
+
+    RoomWithCount:
+      allOf:
+        - $ref: '#/components/schemas/Room'
+        - type: object
+          properties:
+            member_count:
+              type: integer
+              example: 3
+
+    RoomMember:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        username:
+          type: string
+          example: jiseop
+        nickname:
+          type: string
+          example: Jiseop
+        role:
+          type: string
+          enum: [owner, member]
+          example: owner
 
 paths:
   /api/auth/register:
@@ -157,6 +205,250 @@ paths:
                 $ref: '#/components/schemas/Error'
         '404':
           description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/rooms:
+    post:
+      tags: [Rooms]
+      summary: Create a new room
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name]
+              properties:
+                name:
+                  type: string
+                  minLength: 1
+                  maxLength: 50
+                  example: "English Lit Study"
+                description:
+                  type: string
+                  maxLength: 200
+                  nullable: true
+                  example: "Our daily poetry room"
+      responses:
+        '201':
+          description: Room created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Room'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Missing or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/rooms/mine:
+    get:
+      tags: [Rooms]
+      summary: List rooms the current user belongs to
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of rooms
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RoomWithCount'
+        '401':
+          description: Missing or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/rooms/join:
+    post:
+      tags: [Rooms]
+      summary: Join a room with invite code
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [invite_code]
+              properties:
+                invite_code:
+                  type: string
+                  example: "ABC123"
+      responses:
+        '201':
+          description: Joined successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Room'
+        '400':
+          description: Missing or invalid invite_code
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Missing or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Room not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Already a member of this room
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/rooms/{id}/members:
+    get:
+      tags: [Rooms]
+      summary: List members of a room
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: List of members
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RoomMember'
+        '400':
+          description: Invalid room id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Missing or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Not a member of this room
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Room not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/rooms/{id}:
+    delete:
+      tags: [Rooms]
+      summary: Delete a room (owner only)
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '204':
+          description: Room deleted
+        '400':
+          description: Invalid room id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Missing or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Only the owner can delete the room
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Room not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/rooms/{id}/leave:
+    delete:
+      tags: [Rooms]
+      summary: Leave a room (non-owner members)
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '204':
+          description: Left the room
+        '400':
+          description: Invalid room id, or owner cannot leave
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Missing or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Room not found or not a member
           content:
             application/json:
               schema:
