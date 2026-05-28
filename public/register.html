@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up · Typoem</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital@0;1&family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <!-- App stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="auth-page">
+
+  <div class="auth-card">
+
+    <h1 class="auth-brand">Typoem</h1>
+    <p class="auth-subtitle">A daily poem, shared in quiet company.</p>
+
+    <div id="errorBox" class="auth-error hidden"></div>
+
+    <form class="auth-form" id="registerForm">
+
+      <div class="field">
+        <label for="username">Username</label>
+        <input
+          id="username"
+          name="username"
+          type="text"
+          placeholder="Choose a username"
+          required
+          autocomplete="username"
+        >
+        <span class="hint">3–20 characters · letters, numbers, underscores</span>
+      </div>
+
+      <div class="field">
+        <label for="nickname">Nickname</label>
+        <input
+          id="nickname"
+          name="nickname"
+          type="text"
+          placeholder="How should we call you?"
+          required
+          autocomplete="nickname"
+        >
+        <span class="hint">3–20 characters · shown to room members</span>
+      </div>
+
+      <div class="field">
+        <label for="password">Password</label>
+        <input
+          id="password"
+          name="password"
+          type="password"
+          placeholder="••••••••"
+          required
+          autocomplete="new-password"
+        >
+        <span class="hint">At least 8 characters · no spaces</span>
+      </div>
+
+      <div class="field">
+        <label for="confirmPassword">Confirm Password</label>
+        <input
+          id="confirmPassword"
+          name="confirmPassword"
+          type="password"
+          placeholder="••••••••"
+          required
+          autocomplete="new-password"
+        >
+      </div>
+
+      <button type="submit" id="submitBtn" class="auth-submit">Create Account</button>
+
+    </form>
+
+    <p class="auth-footer">
+      Already have an account? <a href="login.html">Log in</a>
+    </p>
+
+  </div>
+
+  <script src="auth.js"></script>
+  <script src="register.js"></script>
+
+</body>
+</html>
