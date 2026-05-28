@@ -22,6 +22,7 @@ const seed = require('./db/seed');
 
 const authRouter = require('./routes/auth');
 const usersRouter = require('./routes/users');
+const roomsRouter = require('./routes/rooms');
 
 const app = express();
 app.use(express.json());
@@ -31,6 +32,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // API routes
 app.use('/api/auth', authRouter);
 app.use('/api/users', usersRouter);
+app.use('/api/rooms', roomsRouter);   
 
 // API docs
 const swaggerDocument = YAML.load(path.join(__dirname, 'openapi.yaml'));
