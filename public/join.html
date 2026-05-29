@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Join a Room · Typoem</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital@0;1&family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <!-- App stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="auth-page">
+
+  <div class="auth-card">
+
+    <h1 class="auth-brand">Join a Room</h1>
+    <p class="auth-subtitle">Enter an invite code from a friend.</p>
+
+    <div id="errorBox" class="auth-error hidden"></div>
+
+    <form class="auth-form" id="joinForm" novalidate>
+
+      <div class="field">
+        <label for="invite_code">Invite Code</label>
+        <input
+          id="invite_code"
+          name="invite_code"
+          type="text"
+          class="code-input"
+          placeholder="ABC234"
+          required
+          minlength="6"
+          maxlength="6"
+          pattern="[A-HJ-KM-NP-Z2-9]{6}"
+          autocomplete="off"
+          autocapitalize="characters"
+          title="6 characters: A–Z (excluding I, L, O) and 2–9"
+        >
+      </div>
+
+      <button type="submit" id="submitBtn" class="auth-submit">Join Room</button>
+
+    </form>
+
+    <p class="auth-footer">
+      <a href="index.html">&larr; Back to My Rooms</a>
+    </p>
+
+  </div>
+
+  <script src="auth.js"></script>
+  <script src="join.js"></script>
+
+</body>
+</html>

@@ -489,6 +489,19 @@ hr {
   padding-top: 28px;        
 }
 
+/* ---- Invite code input (join page) ---- */
+/* If this rule is no longer in styles.css after cleanup, append it. */
+.code-input {
+  text-transform: uppercase;
+  letter-spacing: 6px;
+  text-align: center;
+  font-size: 22px;
+}
+.code-input::placeholder {
+  letter-spacing: 6px;
+}
+ 
+
 
 /* ---- Responsive ---- */
 @media (max-width: 540px) {
