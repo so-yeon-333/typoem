@@ -14,6 +14,8 @@ tags:
     description: User registration and login
   - name: Users
     description: Authenticated user profile
+  - name: Dictionary
+    description: Word definitions (cached proxy of the Free Dictionary API)
 
 components:
   securitySchemes:
@@ -42,6 +44,36 @@ components:
         error:
           type: string
           example: "username already exists"
+
+    WordEntry:
+      type: object
+      properties:
+        word:
+          type: string
+          example: clever
+        phonetic:
+          type: string
+          nullable: true
+          example: "/ˈklɛvə/"
+        definitions:
+          type: array
+          items:
+            type: object
+            properties:
+              partOfSpeech:
+                type: string
+                example: adjective
+              definition:
+                type: string
+                example: Quick to understand, learn, and devise or apply ideas.
+              example:
+                type: string
+                nullable: true
+                example: She is very clever at solving puzzles.
+        cached:
+          type: boolean
+          description: True if the entry was served from word_cache instead of the external API.
+          example: true
 
 paths:
   /api/auth/register:
@@ -157,6 +189,55 @@ paths:
                 $ref: '#/components/schemas/Error'
         '404':
           description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/dictionary/{word}:
+    get:
+      tags: [Dictionary]
+      summary: Look up a word definition
+      description: >
+        Returns the definition of a word. Checks the local word_cache first;
+        on a cache miss it proxies the Free Dictionary API and caches the result.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: word
+          in: path
+          required: true
+          description: English word to look up (letters, apostrophes, hyphens only).
+          schema:
+            type: string
+          example: clever
+      responses:
+        '200':
+          description: Word definition found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WordEntry'
+        '400':
+          description: Invalid word
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Missing or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Word not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '502':
+          description: Dictionary service unavailable
           content:
             application/json:
               schema:
