@@ -1,5 +1,5 @@
 // controllers/dictionaryController.js
-const { getDb } = require("../db");
+const wordCache = require("../models/wordCacheModel");
 
 const DICT_API = "https://api.dictionaryapi.dev/api/v2/entries/en";
 
@@ -45,14 +45,9 @@ async function getDictionary(req, res) {
     return res.status(400).json({ error: "invalid word" });
   }
 
-  const db = getDb();
-
   try {
     // 1. Check the cache first (a hit means no external call is needed)
-    const cached = await db.get(
-      "SELECT word, phonetic, definitions FROM word_cache WHERE word = ?",
-      [word]
-    );
+    const cached = await wordCache.findByWord(word);
 
     if (cached) {
       return res.json({
@@ -87,12 +82,10 @@ async function getDictionary(req, res) {
       return res.status(404).json({ error: "word not found" });
     }
 
-    // 3. Store in the cache. word is UNIQUE, so INSERT OR IGNORE avoids
-    //    a conflict if two requests look up the same new word at once.
-    await db.run(
-      "INSERT OR IGNORE INTO word_cache (word, phonetic, definitions) VALUES (?, ?, ?)",
-      [word, slim.phonetic, JSON.stringify(slim.definitions)]
-    );
+    // 3. Store in the cache (the model handles the SQL and JSON.stringify).
+    //    word is UNIQUE, so the model's INSERT OR IGNORE avoids a conflict
+    //    if two requests look up the same new word at once.
+    await wordCache.upsert(word, slim.phonetic, slim.definitions);
 
     return res.json({ ...slim, cached: false });
   } catch (err) {
