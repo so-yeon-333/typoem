@@ -1,0 +1,268 @@
+/* =================================================
+   Typoem — Stylesheet
+   Newspaper structure + typewriter texture
+   ================================================= */
+
+
+/* ============ Reset ============ */
+* {
+  margin: 0;
+  padding: 0;
+}
+
+
+/* ============ Base ============ */
+body {
+  font-family: 'IM Fell English', Georgia, serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #2b1f12;
+  background: #f4ecd8;
+  min-height: 100vh;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+
+/* ============ Headings ============ */
+h1, h2, h3, h4 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 400;
+  font-style: italic;
+  color: #2b1f12;
+  line-height: 1.2;
+}
+
+h1 {
+  font-size: 36px;
+  letter-spacing: 1px;
+}
+
+h2 {
+  font-size: 26px;
+}
+
+h3 {
+  font-size: 20px;
+}
+
+h4 {
+  font-size: 16px;
+  font-family: 'IM Fell English SC', Georgia, serif;
+  font-style: normal;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #5a4a35;
+}
+
+
+/* ============ Paragraphs ============ */
+p {
+  font-family: 'IM Fell English', Georgia, serif;
+  margin-bottom: 16px;
+}
+
+
+/* ============ Links ============ */
+a {
+  color: #722f37;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+a:hover {
+  color: #2b1f12;
+  text-decoration: underline;
+}
+
+
+/* ============ Buttons ============ */
+button {
+  font-family: 'IM Fell English SC', Georgia, serif;
+  font-size: 13px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: 1px solid #2b1f12;
+  background: #f4ecd8;
+  color: #2b1f12;
+  padding: 14px 36px;
+  transition: background 0.25s, color 0.25s;
+}
+
+button:hover {
+  background: #2b1f12;
+  color: #f4ecd8;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  color: #8a7a5e;
+  border-color: #8a7a5e;
+  background: #f4ecd8;
+}
+
+
+/* ============ Form elements ============ */
+input,
+textarea {
+  font-family: 'IM Fell English', Georgia, serif;
+  font-size: 16px;
+  color: #2b1f12;
+  background: #f4ecd8;
+  border: none;
+  border-bottom: 2px solid #2b1f12;
+  padding: 8px 4px;
+  width: 100%;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+input::placeholder,
+textarea::placeholder {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  color: #b8a684;
+}
+
+input:focus,
+textarea:focus {
+  outline: none;
+  background: #faf4dd;
+  border-bottom-color: #722f37;
+}
+
+label {
+  display: block;
+  font-family: 'IM Fell English SC', Georgia, serif;
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #5a4a35;
+  margin-bottom: 8px;
+}
+
+textarea {
+  min-height: 80px;
+  border: 1px solid #2b1f12;
+  padding: 16px;
+}
+
+
+/* ============ Divider ============ */
+hr {
+  border: none;
+  border-top: 1px solid #c9bca0;
+  margin: 24px 0;
+}
+
+
+
+/* =================================================
+   Page: Auth (register / login)
+   ================================================= */
+
+/* ============ Page layout ============ */
+/* Center the auth card vertically and horizontally on the viewport */
+.auth-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+}
+
+
+/* ============ Auth card ============ */
+/* The framed paper card that holds the form */
+.auth-card {
+  width: 100%;
+  max-width: 480px;
+  background: #faf4dd;
+  border: 1px solid #2b1f12;
+  padding: 40px 32px;
+}
+
+
+/* ============ Auth brand (page heading) ============ */
+.auth-brand {
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.auth-subtitle {
+  text-align: center;
+  font-style: italic;
+  color: #5a4a35;
+  margin-bottom: 32px;
+}
+
+
+/* ============ Auth form fields ============ */
+.auth-form .field {
+  margin-bottom: 20px;
+}
+
+.auth-form .hint {
+  display: block;
+  font-size: 12px;
+  font-style: italic;
+  color: #8a7a5e;
+  margin-top: 4px;
+}
+
+
+/* ============ Auth error message ============ */
+.auth-error {
+  background: #faf4dd;
+  border-left: 3px solid #722f37;
+  color: #722f37;
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.auth-error.hidden {
+  display: none;
+}
+
+
+/* ============ Auth submit button ============ */
+.auth-submit {
+  width: 100%;
+  margin-top: 12px;
+}
+
+
+/* ============ Auth footer (sign-up / log-in link row) ============ */
+.auth-footer {
+  text-align: center;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #c9bca0;
+  font-size: 14px;
+  font-style: italic;
+  color: #5a4a35;
+}
+
+.auth-footer a {
+  font-weight: 700;
+}
+
+/* ============ Responsive (mobile) ============ */
+@media (max-width: 600px) {
+  body {
+    font-size: 15px;
+  }
+
+  h1 {
+    font-size: 28px;
+  }
+
+  button {
+    padding: 12px 24px;
+    font-size: 12px;
+    letter-spacing: 3px;
+  }
+}
