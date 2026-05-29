@@ -1,12 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Typoem — My Rooms</title>
-  <link rel="stylesheet" href="/styles.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Rooms · Typoem</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital@0;1&family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <!-- App stylesheet -->
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+
   <!-- Masthead -->
   <header class="masthead">
     <div class="masthead-inner">
@@ -25,26 +33,23 @@
       <div class="rule-double"></div>
     </div>
 
-    <!-- Status / error line -->
     <p id="status" class="status" role="status"></p>
 
-    <!-- Room cards get rendered here -->
     <section id="rooms-grid" class="rooms-grid" aria-live="polite"></section>
 
-    <!-- Empty state -->
     <div id="empty-state" class="empty-state" hidden>
       <p class="empty-lead">No rooms yet.</p>
       <p class="empty-sub">Create your own corner, or join a friend's with a code.</p>
     </div>
 
-    <!-- Actions -->
     <div class="actions">
-      <a href="/create-room.html" class="btn btn-primary">+ Create New Room</a>
-      <a href="/join.html" class="btn btn-secondary">Join with Code</a>
+      <a href="/create-room.html" class="btn">+ Create New Room</a>
+      <a href="/join.html" class="btn">Join with Code</a>
     </div>
   </main>
 
-  <script src="/auth.js"></script>
-  <script src="/index.js"></script>
+  <script src="auth.js"></script>
+  <script src="index.js"></script>
+
 </body>
 </html>

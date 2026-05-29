@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New Room · Typoem</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital@0;1&family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <!-- App stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="auth-page">
+
+  <div class="auth-card">
+
+    <h1 class="auth-brand">New Room</h1>
+    <p class="auth-subtitle">Start a new corner for daily poems.</p>
+
+    <div id="errorBox" class="auth-error hidden"></div>
+
+    <!-- Create form -->
+    <form class="auth-form" id="createForm" novalidate>
+
+      <div class="field">
+        <label for="name">Room Name</label>
+        <input
+          id="name"
+          name="name"
+          type="text"
+          placeholder="e.g. English Lit Study"
+          required
+          minlength="1"
+          maxlength="50"
+          autocomplete="off"
+        >
+      </div>
+
+      <div class="field">
+        <label for="description">Description (optional)</label>
+        <textarea
+          id="description"
+          name="description"
+          placeholder="What is this room about?"
+          maxlength="200"
+          rows="3"
+        ></textarea>
+      </div>
+
+      <button type="submit" id="submitBtn" class="auth-submit">Create Room</button>
+
+    </form>
+
+    <!-- Success view (hidden until creation succeeds) -->
+    <div id="successBox" class="hidden">
+      <p class="auth-subtitle" style="margin-top: 24px;">Room created! Share this invite code:</p>
+      <p class="invite-code" id="inviteCode"></p>
+      <a href="/index.html" class="auth-submit" style="display:block; text-align:center;">Go to My Rooms</a>
+    </div>
+
+    <p class="auth-footer">
+      <a href="index.html">&larr; Back to My Rooms</a>
+    </p>
+
+  </div>
+
+  <script src="auth.js"></script>
+  <script src="create-room.js"></script>
+
+</body>
+</html>
