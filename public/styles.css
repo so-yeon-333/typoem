@@ -317,7 +317,7 @@ hr {
 .page {
   max-width: 880px;
   margin: 0 auto;
-  padding: 28px 24px 64px;
+  padding: 12px 24px 64px;
 }
 .page-headline h1 {
   text-align: center;
@@ -468,6 +468,45 @@ hr {
   padding: 16px;
   margin: 16px 0 20px;
 }
+/* ---- Invite code + copy button row ---- */
+.invite-code-row {
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+  margin: 16px 0 8px;
+}
+.invite-code-row .invite-code {
+  flex: 1;
+  margin: 0;                 /* 기존 margin 제거, row가 간격 담당 */
+}
+
+.copy-btn {
+  font-family: 'IM Fell English SC', Georgia, serif;
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 0 18px;
+  border: 1px dashed #5a4a35;   
+  background: #f4ecd8;
+  color: #2b1f12;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.25s, color 0.25s;
+}
+.copy-btn:hover {
+  background: #2b1f12;
+  color: #f4ecd8;
+}
+
+.copy-feedback {
+  text-align: center;
+  font-style: italic;
+  font-size: 13px;
+  color: #5a4a35;
+  margin-bottom: 12px;
+}
+.copy-feedback.hidden { display: none; }
+
 .back-link {
   text-align: center;
   margin-top: 24px;
@@ -494,7 +533,7 @@ hr {
 /* ① Pull the "New Room" headline up a bit
    (reduce the top padding of .page on these pages)         */
 .page {
-  padding-top: 28px;        
+  padding-top: 12px;        
 }
 
 /* ---- Invite code input (join page) ---- */
