@@ -340,19 +340,21 @@ hr {
 .rooms-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 0;
+  gap: 18px;                
 }
 .room-card {
   border: 1px solid #2b1f12;
   border-radius: 0;
-  padding: 20px 18px;
-  margin: -0.5px;             /* collapse borders into shared rules */
+  padding: 22px 20px;
+  margin: 0;             
   background: #f8f2e2;
   display: flex;
   flex-direction: column;
+  min-height: 200px;        
 }
 .room-name {
-  margin-bottom: 6px;
+  font-size: 22px;
+  margin-bottom: 8px;
 }
 .room-desc {
   color: #5a4a35;
@@ -363,9 +365,14 @@ hr {
 .room-meta {
   font-family: 'IM Fell English SC', Georgia, serif;
   letter-spacing: 1px;
-  font-size: 13px;
-  color: #5a4a35;
+  font-size: 16px;        
+  color: #2b1f12;           
   margin-bottom: 14px;
+}
+
+.room-meta .paw {
+  filter: grayscale(1) brightness(0.45);
+  font-size: 14px;
 }
 
 /* ---- Buttons (links styled as buttons; matches global <button>) ---- */
@@ -392,6 +399,7 @@ hr {
 .btn-enter {
   padding: 9px 18px;
   align-self: flex-start;
+  margin-top: auto;         
 }
 
 /* ---- Actions row ---- */
