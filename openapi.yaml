@@ -18,6 +18,8 @@ tags:
     description: Private rooms with invite codes
   - name: Dictionary
     description: Word definitions (cached proxy of the Free Dictionary API)
+  - name: Memos
+    description: Memos on a room's poem of the day
 
 components:
   securitySchemes:
@@ -122,6 +124,31 @@ components:
           type: boolean
           description: True if the entry was served from word_cache instead of the external API.
           example: true
+    Memo:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        user_id:
+          type: integer
+          example: 4
+        room_id:
+          type: integer
+          example: 1
+        poem_id:
+          type: integer
+          example: 1
+        content:
+          type: string
+          example: "This poem really moved me today."
+        created_at:
+          type: string
+          example: "2026-05-30 13:20:05"
+        author_nickname:
+          type: string
+          description: Included in list responses (joined from users).
+          example: Tester
 
 paths:
   /api/auth/register:
@@ -409,6 +436,198 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /api/rooms/{id}/memos:
+    post:
+      tags: [Memos]
+      summary: Create a memo on the room's poem of the day
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [content]
+              properties:
+                content:
+                  type: string
+                  minLength: 1
+                  maxLength: 1000
+                  example: "This poem really moved me today."
+      responses:
+        '201':
+          description: Memo created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Memo'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Missing or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Not a member of this room
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Room not found, or no poem assigned today
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    get:
+      tags: [Memos]
+      summary: List memos on the room's poem of the day
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: List of memos (newest first)
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Memo'
+        '401':
+          description: Missing or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Not a member of this room
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Room not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/memos/{id}:
+    patch:
+      tags: [Memos]
+      summary: Edit a memo (author only)
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [content]
+              properties:
+                content:
+                  type: string
+                  minLength: 1
+                  maxLength: 1000
+                  example: "Edited: this poem stayed with me all day."
+      responses:
+        '200':
+          description: Memo updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Memo'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Missing or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Can only edit your own memo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Memo not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags: [Memos]
+      summary: Delete a memo (author only)
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '204':
+          description: Memo deleted
+        '400':
+          description: Invalid memo id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Missing or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Can only delete your own memo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Memo not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
   /api/rooms/{id}:
     delete:
@@ -428,6 +647,28 @@ paths:
           description: Room deleted
         '400':
           description: Invalid room id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Missing or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Only the owner can delete this room
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Room not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /api/dictionary/{word}:
     get:
       tags: [Dictionary]
@@ -464,16 +705,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-        '403':
-          description: Only the owner can delete the room
+        '404':
+          description: Word not found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-        '404':
-          description: Room not found
-        '404':
-          description: Word not found
+        '502':
+          description: Dictionary service unavailable
           content:
             application/json:
               schema:
@@ -507,10 +746,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+        '403':
+          description: Not a member of this room
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '404':
-          description: Room not found or not a member
-        '502':
-          description: Dictionary service unavailable
+          description: Room not found
           content:
             application/json:
               schema:
