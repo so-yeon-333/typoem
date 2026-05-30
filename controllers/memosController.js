@@ -137,3 +137,5 @@ async function deleteMemo(req, res) {
         res.status(500).json({ error: "Server error" });
     }
 }
+
+module.exports = { createMemo, listMemos, updateMemo, deleteMemo };
