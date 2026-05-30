@@ -57,11 +57,16 @@
     <!-- Success view (hidden until creation succeeds) -->
     <div id="successBox" class="hidden">
       <p class="auth-subtitle" style="margin-top: 24px;">Room created! Share this invite code:</p>
-      <p class="invite-code" id="inviteCode"></p>
-      <a href="/index.html" class="auth-submit" style="display:block; text-align:center;">Go to My Rooms</a>
+
+      <div class="invite-code-row">
+        <p class="invite-code" id="inviteCode"></p>
+        <button type="button" id="copyBtn" class="copy-btn" title="Copy code">Copy</button>
+      </div>
+      <p class="copy-feedback hidden" id="copyFeedback">Copied to clipboard.</p>
     </div>
 
-    <p class="auth-footer">
+    <!-- Back link -->
+    <p class="auth-footer" id="backFooter">
       <a href="index.html">&larr; Back to My Rooms</a>
     </p>
 

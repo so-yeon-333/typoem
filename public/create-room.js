@@ -49,6 +49,30 @@ form.addEventListener('submit', async function (e) {
     inviteCode.textContent = room.invite_code;
     successBox.classList.remove('hidden');
 
+    // ---- Copy button ----
+    const copyBtn = document.getElementById('copyBtn');
+    const copyFeedback = document.getElementById('copyFeedback');
+
+    copyBtn.addEventListener('click', async function () {
+      try {
+        await navigator.clipboard.writeText(room.invite_code);
+      } catch (err) {
+        const range = document.createRange();
+        range.selectNodeContents(inviteCode);
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+        document.execCommand('copy');
+        sel.removeAllRanges();
+      }
+      copyBtn.textContent = 'Copied';
+      copyFeedback.classList.remove('hidden');
+      setTimeout(function () {
+        copyBtn.textContent = 'Copy';
+        copyFeedback.classList.add('hidden');
+      }, 20000);
+    });
+
   } catch (err) {
     console.error('Create room error:', err);
     showError(err.message || 'Something went wrong. Please try again.');
