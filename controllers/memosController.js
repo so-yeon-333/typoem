@@ -81,3 +81,59 @@ async function listMemos(req, res) {
         res.status(500).json({ error: "Server error" });
     }
 }
+
+// update a memo's content (author only)
+// [PATCH] /api/memos/:id
+async function updateMemo(req, res) {
+    try {
+        const memo_id = parseId(req.params.id);
+        if (!memo_id) return res.status(400).json({ error: "invalid memo id" });
+
+        const memo = await model.findById(memo_id);
+        if (!memo) return res.status(404).json({ error: "Memo not found" });
+
+        // only the author can edit
+        if (memo.user_id !== req.user.id) {
+            return res.status(403).json({ error: "You can only edit your own memo" });
+        }
+
+        // validate new content
+        const { content } = req.body;
+        if (!content || typeof content !== "string") {
+            return res.status(400).json({ error: "content required" });
+        }
+        const trimmed = content.trim();
+        if (trimmed.length < 1 || trimmed.length > 1000) {
+            return res.status(400).json({ error: "content must be 1-1000 characters" });
+        }
+
+        const updated = await model.updateMemo(memo_id, trimmed);
+        res.status(200).json(updated);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Server error" });
+    }
+}
+
+// delete a memo (author only)
+// [DELETE] /api/memos/:id
+async function deleteMemo(req, res) {
+    try {
+        const memo_id = parseId(req.params.id);
+        if (!memo_id) return res.status(400).json({ error: "invalid memo id" });
+
+        const memo = await model.findById(memo_id);
+        if (!memo) return res.status(404).json({ error: "Memo not found" });
+
+        // only the author can delete
+        if (memo.user_id !== req.user.id) {
+            return res.status(403).json({ error: "You can only delete your own memo" });
+        }
+
+        await model.deleteMemo(memo_id);
+        res.status(204).end();
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Server error" });
+    }
+}
