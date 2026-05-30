@@ -22,6 +22,7 @@ const seed = require('./db/seed');
 
 const authRouter = require('./routes/auth');
 const usersRouter = require('./routes/users');
+const roomsRouter = require('./routes/rooms');
 const dictionaryRouter = require('./routes/dictionary');
 
 const app = express();
@@ -32,6 +33,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // API routes
 app.use('/api/auth', authRouter);
 app.use('/api/users', usersRouter);
+app.use('/api/rooms', roomsRouter);   
 app.use('/api/dictionary', dictionaryRouter);  
 
 // API docs
