@@ -75,6 +75,8 @@ form.addEventListener('submit', async function (e) {
 
   } catch (err) {
     console.error('Create room error:', err);
+    successBox.classList.add('hidden');
+    form.classList.remove('hidden');  
     showError(err.message || 'Something went wrong. Please try again.');
     submitBtn.disabled = false;
     submitBtn.textContent = 'Create Room';
