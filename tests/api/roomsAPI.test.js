@@ -193,6 +193,22 @@ describe("DELETE /api/rooms/:id/leave", () => {
     expect(roomsModel.removeMember).not.toHaveBeenCalled();
   });
 
+  test("returns 403 when the user is not a member of the room", async () => {
+    // Arrange: room exists, owner is someone else, but the user is NOT a member
+    roomsModel.findById.mockResolvedValue({ id: 5, name: "Room", owner_id: 2 });
+    roomsModel.isMember.mockResolvedValue(false);
+
+    // Act
+    const res = await request(app)
+      .delete("/api/rooms/5/leave")
+      .set("Authorization", `Bearer ${token}`);
+
+    // Assert
+    expect(res.statusCode).toBe(403);
+    // Not a member → we never remove anyone.
+    expect(roomsModel.removeMember).not.toHaveBeenCalled();
+  });
+  
   test("returns 204 when a member leaves successfully", async () => {
     // Arrange: room exists, owner is someone else, current user is a member
     roomsModel.findById.mockResolvedValue({ id: 5, name: "Room", owner_id: 2 });
