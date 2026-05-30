@@ -55,3 +55,29 @@ async function createMemo(req, res) {
         res.status(500).json({ error: "Server error" });
     }
 }
+
+// list memos on the room's poem of the day
+// [GET] /api/rooms/:id/memos
+async function listMemos(req, res) {
+    try {
+        const room_id = parseId(req.params.id);
+        if (!room_id) return res.status(400).json({ error: "invalid room id" });
+
+        // must be a member of the room
+        const room = await roomsModel.findById(room_id);
+        if (!room) return res.status(404).json({ error: "Room not found" });
+
+        const isMember = await roomsModel.isMember(room_id, req.user.id);
+        if (!isMember) return res.status(403).json({ error: "You are not a member of this room" });
+
+        // find today's poem; if none, there are simply no memos to show
+        const poem_id = await model.findTodayPoemId(room_id, today());
+        if (!poem_id) return res.status(200).json([]);
+
+        const memos = await model.listForRoomPoem(room_id, poem_id);
+        res.status(200).json(memos);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Server error" });
+    }
+}
