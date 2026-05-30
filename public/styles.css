@@ -11,6 +11,10 @@
   box-sizing: border-box;   
 }
 
+/* ============ Utility ============ */
+.hidden {
+  display: none !important;
+}
 
 /* ============ Base ============ */
 body {
@@ -505,7 +509,6 @@ hr {
   color: #5a4a35;
   margin-bottom: 12px;
 }
-.copy-feedback.hidden { display: none; }
 
 .back-link {
   text-align: center;
