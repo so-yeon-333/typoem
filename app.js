@@ -24,6 +24,7 @@ const authRouter = require('./routes/auth');
 const usersRouter = require('./routes/users');
 const roomsRouter = require('./routes/rooms');
 const dictionaryRouter = require('./routes/dictionary');
+const { roomMemosRouter, memosRouter } = require('./routes/memos');
 
 const app = express();
 app.use(express.json());
@@ -33,8 +34,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 // API routes
 app.use('/api/auth', authRouter);
 app.use('/api/users', usersRouter);
-app.use('/api/rooms', roomsRouter);   
-app.use('/api/dictionary', dictionaryRouter);  
+app.use('/api/rooms', roomsRouter); 
+app.use('/api/rooms', roomMemosRouter);
+app.use('/api/memos', memosRouter);
+app.use('/api/dictionary', dictionaryRouter);
+
 
 // API docs
 const swaggerDocument = YAML.load(path.join(__dirname, 'openapi.yaml'));
