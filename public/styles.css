@@ -8,6 +8,7 @@
 * {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;   
 }
 
 
@@ -266,3 +267,248 @@ hr {
     letter-spacing: 3px;
   }
 }
+
+/* =================================================
+   P11 — Rooms pages (index / create-room / join)
+   Append to public/styles.css
+   Uses the existing palette:
+     bg #f4ecd8 · ink #2b1f12 · muted #5a4a35
+   ================================================= */
+
+/* ---- Masthead ---- */
+.masthead {
+  border-bottom: 3px double #2b1f12;
+  padding: 18px 24px 10px;
+  max-width: 880px;
+  margin: 0 auto;
+}
+.masthead-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.masthead-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-size: 30px;
+  color: #2b1f12;
+  text-decoration: none;
+}
+.masthead-nav {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+}
+.nav-user {
+  font-family: 'IM Fell English SC', Georgia, serif;
+  letter-spacing: 1px;
+  color: #5a4a35;
+}
+.masthead-date {
+  font-family: 'IM Fell English SC', Georgia, serif;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  font-size: 12px;
+  color: #5a4a35;
+  margin-top: 6px;
+}
+
+/* ---- Page shell ---- */
+.page {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 28px 24px 64px;
+}
+.page-headline h1 {
+  text-align: center;
+}
+.rule-double {
+  border-top: 3px double #2b1f12;
+  margin: 14px 0 26px;
+}
+
+/* ---- Status line ---- */
+.status {
+  text-align: center;
+  color: #5a4a35;
+  font-style: italic;
+  min-height: 1.4em;
+  margin-bottom: 12px;
+}
+
+/* ---- Room grid (newspaper columns) ---- */
+.rooms-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 0;
+}
+.room-card {
+  border: 1px solid #2b1f12;
+  border-radius: 0;
+  padding: 20px 18px;
+  margin: -0.5px;             /* collapse borders into shared rules */
+  background: #f8f2e2;
+  display: flex;
+  flex-direction: column;
+}
+.room-name {
+  margin-bottom: 6px;
+}
+.room-desc {
+  color: #5a4a35;
+  font-size: 15px;
+  margin-bottom: 10px;
+  flex-grow: 1;
+}
+.room-meta {
+  font-family: 'IM Fell English SC', Georgia, serif;
+  letter-spacing: 1px;
+  font-size: 13px;
+  color: #5a4a35;
+  margin-bottom: 14px;
+}
+
+/* ---- Buttons (links styled as buttons; matches global <button>) ---- */
+.btn {
+  display: inline-block;
+  font-family: 'IM Fell English SC', Georgia, serif;
+  font-size: 13px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  text-align: center;
+  cursor: pointer;
+  border: 1px solid #2b1f12;
+  background: #f4ecd8;
+  color: #2b1f12;
+  padding: 14px 36px;
+  text-decoration: none;
+  transition: background 0.25s, color 0.25s;
+}
+.btn:hover {
+  background: #2b1f12;
+  color: #f4ecd8;
+  text-decoration: none;
+}
+.btn-enter {
+  padding: 9px 18px;
+  align-self: flex-start;
+}
+
+/* ---- Actions row ---- */
+.actions {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 32px;
+}
+
+/* ---- Empty state ---- */
+.empty-state {
+  text-align: center;
+  padding: 40px 0;
+}
+.empty-lead {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-size: 22px;
+  color: #2b1f12;
+}
+.empty-sub {
+  color: #5a4a35;
+  margin-top: 6px;
+}
+
+
+.code-input {
+  text-transform: uppercase;
+  letter-spacing: 6px;
+  text-align: center;
+  font-size: 22px !important;
+}
+
+
+/* ---- Link-style button (logout) ---- */
+.link-btn {
+  border: none;
+  background: none;
+  font-family: 'IM Fell English', Georgia, serif;
+  font-size: 15px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: #5a4a35;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+}
+.link-btn:hover {
+  background: none;
+  color: #2b1f12;
+  text-decoration: underline;
+}
+
+
+/* ---- Invite code display + back link (create-room / join) ---- */
+.invite-code {
+  font-family: 'IM Fell English SC', Georgia, serif;
+  letter-spacing: 8px;
+  font-size: 34px;
+  text-align: center;
+  color: #2b1f12;
+  background: #f4ecd8;
+  border: 1px dashed #5a4a35;
+  padding: 16px;
+  margin: 16px 0 20px;
+}
+.back-link {
+  text-align: center;
+  margin-top: 24px;
+}
+.back-link a {
+  font-family: 'IM Fell English SC', Georgia, serif;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 12px;
+  color: #5a4a35;
+  text-decoration: none;
+}
+.back-link a:hover { color: #2b1f12; text-decoration: underline; }
+
+
+
+
+/* =================================================
+   Create-room fine-tuning
+   Replace/append near the rooms-pages styles.
+   Scoped to .room-form so login/register are untouched.
+   ================================================= */
+
+/* ① Pull the "New Room" headline up a bit
+   (reduce the top padding of .page on these pages)         */
+.page {
+  padding-top: 28px;        
+}
+
+/* ---- Invite code input (join page) ---- */
+/* If this rule is no longer in styles.css after cleanup, append it. */
+.code-input {
+  text-transform: uppercase;
+  letter-spacing: 6px;
+  text-align: center;
+  font-size: 22px;
+}
+.code-input::placeholder {
+  letter-spacing: 6px;
+}
+ 
+
+
+/* ---- Responsive ---- */
+@media (max-width: 540px) {
+  .masthead-title { font-size: 24px; }
+  .rooms-grid { grid-template-columns: 1fr; }
+  .actions { flex-direction: column; }
+  .btn { width: 100%; }
+}
+
+
