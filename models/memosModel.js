@@ -48,3 +48,12 @@ async function updateMemo(id, content) {
 async function deleteMemo(id) {
     return await getDb().run(`DELETE FROM memos WHERE id = ?`, [id]);
 }
+
+module.exports = {
+    findTodayPoemId,
+    listForRoomPoem,
+    findById,
+    createMemo,
+    updateMemo,
+    deleteMemo,
+};
