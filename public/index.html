@@ -1,11 +1,55 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Typoem</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Rooms · Typoem</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital@0;1&family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <!-- App stylesheet -->
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <h1>Typoem</h1>
-  <p>Coming soon — a cozy corner for daily poems and shared ink-marks.</p>
+
+  <!-- Masthead -->
+  <header class="masthead">
+    <div class="masthead-inner">
+      <a href="/index.html" class="masthead-title">Typoem</a>
+      <nav class="masthead-nav">
+        <span id="nav-user" class="nav-user"></span>
+        <button type="button" id="logout-btn" class="link-btn">Log out</button>
+      </nav>
+    </div>
+    <p class="masthead-date" id="today"></p>
+  </header>
+
+  <main class="page">
+    <div class="page-headline">
+      <h1>My Rooms</h1>
+      <div class="rule-double"></div>
+    </div>
+
+    <p id="status" class="status" role="status"></p>
+
+    <section id="rooms-grid" class="rooms-grid" aria-live="polite"></section>
+
+    <div id="empty-state" class="empty-state" hidden>
+      <p class="empty-lead">No rooms yet.</p>
+      <p class="empty-sub">Create your own corner, or join a friend's with a code.</p>
+    </div>
+
+    <div class="actions">
+      <a href="/create-room.html" class="btn">+ Create New Room</a>
+      <a href="/join.html" class="btn">Join with Code</a>
+    </div>
+  </main>
+
+  <script src="auth.js"></script>
+  <script src="index.js"></script>
+
 </body>
 </html>
