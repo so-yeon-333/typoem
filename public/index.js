@@ -36,7 +36,7 @@ function roomCard(room) {
     <article class="room-card">
       <h2 class="room-name">${escapeHtml(room.name)}</h2>
       ${desc}
-      <p class="room-meta">&#128101; ${escapeHtml(room.member_count)} members</p>
+      <p class="room-meta"><span class="paw">&#128062;</span> ${escapeHtml(room.member_count)} Members</p>
       <a href="/room.html?id=${encodeURIComponent(room.id)}" class="btn btn-enter">Enter &rarr;</a>
     </article>
   `;
