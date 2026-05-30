@@ -128,7 +128,7 @@ async function leaveRoom(req, res) {
         if (room.owner_id === req.user.id) return res.status(400).json({ error: "Owner cannot leave the room; delete it instead" });
 
         const isMember = await model.isMember(room_id, req.user.id);
-        if (!isMember) return res.status(404).json({ error: "You are not a member of this room" });
+        if (!isMember) return res.status(403).json({ error: "You are not a member of this room" });
 
         await model.removeMember(room_id, req.user.id);
         res.status(204).end();
