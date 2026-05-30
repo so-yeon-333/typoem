@@ -24,9 +24,18 @@ async function listForRoomPoem(room_id, poem_id) {
     );
 }
 
-// find one memo by id. used for ownership checks on PATCH/DELETE.
+// find one memo by id, joined with author nickname.
+// used for ownership checks on PATCH/DELETE, and as the response shape
+// for create/update so it matches listForRoomPoem.
 async function findById(id) {
-    return await getDb().get(`SELECT * FROM memos WHERE id = ?`, [id]);
+    return await getDb().get(
+        `SELECT m.id, m.user_id, m.room_id, m.poem_id, m.content, m.created_at,
+                u.nickname AS author_nickname
+         FROM memos m
+         JOIN users u ON u.id = m.user_id
+         WHERE m.id = ?`,
+        [id]
+    );
 }
 
 // create a memo and return the full inserted row.
