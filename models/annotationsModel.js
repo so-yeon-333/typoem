@@ -44,6 +44,14 @@ async function findById(id) {
     );
 }
 
+async function findByUserLine(line_id, room_id, user_id) {
+    return await getDb().get(
+        `SELECT id FROM line_annotations
+         WHERE line_id = ? AND room_id = ? AND user_id = ?`,
+        [line_id, room_id, user_id]
+    );
+}
+
 // create an annotation and return the full inserted row.
 async function createAnnotation({ line_id, room_id, user_id, content }) {
     const result = await getDb().run(
