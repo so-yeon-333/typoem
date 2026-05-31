@@ -120,3 +120,28 @@ async function updateAnnotation(req, res) {
         res.status(500).json({ error: "Server error" });
     }
 }
+
+// delete an annotation (author only)
+// [DELETE] /api/annotations/:id
+async function deleteAnnotation(req, res) {
+    try {
+        const annotation_id = parseId(req.params.id);
+        if (!annotation_id) return res.status(400).json({ error: "invalid annotation id" });
+
+        const annotation = await model.findById(annotation_id);
+        if (!annotation) return res.status(404).json({ error: "Annotation not found" });
+
+        // only the author can delete
+        if (annotation.user_id !== req.user.id) {
+            return res.status(403).json({ error: "You can only delete your own annotation" });
+        }
+
+        await model.deleteAnnotation(annotation_id);
+        res.status(204).end();
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Server error" });
+    }
+}
+
+module.exports = { createAnnotation, listAnnotations, updateAnnotation, deleteAnnotation };
