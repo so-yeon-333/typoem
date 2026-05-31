@@ -43,3 +43,27 @@ async function findById(id) {
         [id]
     );
 }
+
+// create an annotation and return the full inserted row.
+async function createAnnotation({ line_id, room_id, user_id, content }) {
+    const result = await getDb().run(
+        `INSERT INTO line_annotations (line_id, room_id, user_id, content)
+         VALUES (?, ?, ?, ?)`,
+        [line_id, room_id, user_id, content]
+    );
+    return await findById(result.lastID);
+}
+
+// update an annotation's content and return the updated row.
+async function updateAnnotation(id, content) {
+    await getDb().run(
+        `UPDATE line_annotations SET content = ? WHERE id = ?`,
+        [content, id]
+    );
+    return await findById(id);
+}
+
+// delete an annotation.
+async function deleteAnnotation(id) {
+    return await getDb().run(`DELETE FROM line_annotations WHERE id = ?`, [id]);
+}
