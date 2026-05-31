@@ -13,3 +13,17 @@ async function findLineForRoomDate(line_id, room_id, date) {
         [line_id, room_id, date]
     );
 }
+
+// list annotations for one line within a room, newest first.
+// joined with the author's nickname so the frontend can show who wrote it.
+async function listForLine(room_id, line_id) {
+    return await getDb().all(
+        `SELECT a.id, a.line_id, a.room_id, a.user_id, a.content, a.created_at,
+                u.nickname AS author_nickname
+         FROM line_annotations a
+         JOIN users u ON u.id = a.user_id
+         WHERE a.room_id = ? AND a.line_id = ?
+         ORDER BY a.created_at DESC, a.id DESC`,
+        [room_id, line_id]
+    );
+}
