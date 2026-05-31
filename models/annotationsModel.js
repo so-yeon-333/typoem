@@ -27,3 +27,17 @@ async function listForLine(room_id, line_id) {
         [room_id, line_id]
     );
 }
+
+// find one annotation by id, joined with author nickname.
+// used for ownership checks on PATCH/DELETE, and as the response shape
+// for create/update so it matches listForLine.
+async function findById(id) {
+    return await getDb().get(
+        `SELECT a.id, a.line_id, a.room_id, a.user_id, a.content, a.created_at,
+                u.nickname AS author_nickname
+         FROM line_annotations a
+         JOIN users u ON u.id = a.user_id
+         WHERE a.id = ?`,
+        [id]
+    );
+}
