@@ -23,6 +23,18 @@ document.getElementById('today').textContent = new Date().toLocaleDateString('en
   day: 'numeric',
 });
 
+// ---- Escape user-provided text before inserting into HTML (XSS guard) ----
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str == null ? '' : String(str);
+  return div.innerHTML;
+}
+
+// ---- A line is "real" content if it has non-whitespace text ----
+function hasContent(text) {
+  return typeof text === 'string' && text.trim().length > 0;
+}
+
 // =====================================================================
 //  Initial load
 // =====================================================================
@@ -52,6 +64,55 @@ async function loadToday() {
   if (data.room && data.room.name) {
     document.getElementById('room-name').textContent = data.room.name;
   }
+
+  renderPoem(data.poem);
+}
+
+// =====================================================================
+//  Poem rendering
+// =====================================================================
+function renderPoem(poem) {
+  const titleEl = document.getElementById('poem-title');
+  const authorEl = document.getElementById('poem-author');
+  const bodyEl = document.getElementById('poem-body');
+
+  if (!poem) {
+    bodyEl.innerHTML = '<p class="status">No poem available.</p>';
+    return;
+  }
+
+  titleEl.textContent = poem.title || 'Untitled';
+  authorEl.textContent = poem.author ? `by ${poem.author}` : '';
+
+  const lines = Array.isArray(poem.lines) ? poem.lines : [];
+  bodyEl.innerHTML = lines.map(renderLine).join('');
+}
+
+// One poem line. Blank lines render as spacers.
+function renderLine(line) {
+  if (!hasContent(line.text)) {
+    return '<div class="poem-line poem-line-blank"><span class="line-text">&nbsp;</span></div>';
+  }
+  return `
+    <div class="poem-line" data-line-id="${line.id}">
+      <span class="line-text">${wrapWords(line.text)}</span>
+    </div>
+  `;
+}
+
+// Wrap each word in a span the dictionary popup (P12) can attach to.
+function wrapWords(text) {
+  const words = text.split(' ');
+  const spans = [];
+  for (const w of words) {
+    if (w === '') {
+      spans.push('');
+    } else {
+      const lookup = escapeHtml(w.toLowerCase());
+      spans.push(`<span class="word" data-word="${lookup}">${escapeHtml(w)}</span>`);
+    }
+  }
+  return spans.join(' ');
 }
 
 loadToday();
