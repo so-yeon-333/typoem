@@ -562,3 +562,75 @@ hr {
 }
 
 
+/* =================================================
+   Page: Room — Today's Poem (P13)
+   ================================================= */
+
+.back-link {
+  font-family: 'IM Fell English SC', Georgia, serif;
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+/* Thin single rule (companion to .rule-double) */
+.rule-thin {
+  border-top: 1px solid #c9bca0;
+  margin: 18px 0;
+}
+
+/* ---- Poem sheet ---- */
+.poem-sheet {
+  background: #faf4dd;
+  border: 1px solid #2b1f12;
+  padding: 40px 44px;
+  box-shadow: 3px 3px 0 #e0d5b8;
+}
+
+.poem-title {
+  text-align: center;
+}
+
+.poem-author {
+  text-align: center;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  color: #5a4a35;
+  margin-bottom: 4px;
+}
+
+.poem-body {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 20px;
+  line-height: 1.5;
+  margin: 8px 0 24px;
+}
+
+/* ---- A poem line (text only for now) ---- */
+.poem-line {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.line-text {
+  flex: 1 1 auto;
+  padding: 4px 0;
+}
+
+.poem-line-blank {
+  padding: 4px 0;
+}
+
+/* word span — dictionary territory. P12 binds its popup to .word (click). */
+.word {
+  cursor: help;
+  border-bottom: 1px dotted transparent;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.word:hover {
+  color: #722f37;
+  border-bottom-color: #722f37;
+}
