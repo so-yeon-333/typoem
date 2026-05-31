@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const controller = require("../controllers/roomsController");
+const todayController = require("../controllers/todayController");
 
 const { authenticate } = require("../middleware/authMiddleware"); // for authentication
 
@@ -12,6 +13,7 @@ router.post("/", controller.createRoom);
 router.get("/mine", controller.listMyRooms);
 router.post("/join", controller.joinRoom);
 router.get("/:id/members", controller.getMembers);
+router.get("/:id/today", todayController.getToday); // today's poem + memos + annotations
 router.delete("/:id/leave", controller.leaveRoom); // must be above '/:id'
 router.delete("/:id", controller.deleteRoom);
 

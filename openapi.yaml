@@ -20,6 +20,8 @@ tags:
     description: Word definitions (cached proxy of the Free Dictionary API)
   - name: Memos
     description: Memos on a room's poem of the day
+  - name: Poems
+    description: The room's poem of the day with its memos and line annotations
 
 components:
   securitySchemes:
@@ -149,6 +151,97 @@ components:
           type: string
           description: Included in list responses (joined from users).
           example: Tester
+
+    PoemLine:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 21
+        line_number:
+          type: integer
+          example: 1
+        text:
+          type: string
+          description: Empty string for blank lines (stanza breaks).
+          example: "When I was One,"
+
+    Poem:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 7
+        title:
+          type: string
+          example: "Now We Are Six"
+        author:
+          type: string
+          example: "A. A. Milne"
+        linecount:
+          type: integer
+          description: Number of non-empty lines.
+          example: 12
+        lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/PoemLine'
+
+    LineAnnotation:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 5
+        line_id:
+          type: integer
+          example: 21
+        line_number:
+          type: integer
+          example: 1
+        room_id:
+          type: integer
+          example: 1
+        user_id:
+          type: integer
+          example: 4
+        content:
+          type: string
+          example: "Striking opening."
+        created_at:
+          type: string
+          example: "2026-05-31 10:05:00"
+        author_nickname:
+          type: string
+          description: Joined from users.
+          example: Soyeon
+
+    TodayPoem:
+      type: object
+      properties:
+        room:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            name:
+              type: string
+              example: "English Lit Study"
+        date:
+          type: string
+          description: UTC date (YYYY-MM-DD) the poem is assigned for.
+          example: "2026-05-31"
+        poem:
+          $ref: '#/components/schemas/Poem'
+        memos:
+          type: array
+          items:
+            $ref: '#/components/schemas/Memo'
+        annotations:
+          type: array
+          items:
+            $ref: '#/components/schemas/LineAnnotation'
 
 paths:
   /api/auth/register:
@@ -432,6 +525,61 @@ paths:
                 $ref: '#/components/schemas/Error'
         '404':
           description: Room not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/rooms/{id}/today:
+    get:
+      tags: [Poems]
+      summary: Get today's poem with its memos and line annotations
+      description: >
+        Returns the room's poem of the day plus its full-poem memos and line
+        annotations. If no poem is assigned yet, a fresh (room-unseen) poem is
+        fetched live from PoetryDB (falling back to a local pool), cached, and
+        assigned for today. This is the only endpoint that assigns a daily poem.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Today's poem with memos and annotations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TodayPoem'
+        '400':
+          description: Invalid room id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Missing or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Not a member of this room
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Room not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '503':
+          description: No fresh poem available right now; client should retry
           content:
             application/json:
               schema:
