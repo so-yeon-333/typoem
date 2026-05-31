@@ -37,12 +37,34 @@
 
     <p id="status" class="status" role="status"></p>
 
-    <article class="poem-sheet">
-      <h2 class="poem-title" id="poem-title"></h2>
-      <p class="poem-author" id="poem-author"></p>
-      <div class="rule-thin"></div>
-      <div class="poem-body" id="poem-body"></div>
-    </article>
+    <div class="poem-layout">
+
+      <!-- Today's poem -->
+      <section class="poem-column" aria-label="Today's poem">
+        <article class="poem-sheet">
+          <h2 class="poem-title" id="poem-title"></h2>
+          <p class="poem-author" id="poem-author"></p>
+          <div class="rule-thin"></div>
+          <div class="poem-body" id="poem-body"></div>
+        </article>
+      </section>
+
+      <!-- Memos (full-poem notes) -->
+      <aside class="memo-column" aria-label="Memos">
+        <h4 class="panel-heading">Memos</h4>
+
+        <div class="memo-compose">
+          <textarea id="memo-input" class="note-input" rows="3"
+            placeholder="Leave a memo on today&rsquo;s poem&hellip;" maxlength="1000"></textarea>
+          <p id="memo-error" class="auth-error" role="alert"></p>
+          <button type="button" id="memo-submit" class="btn">Post Memo</button>
+        </div>
+
+        <p id="memo-empty" class="empty-sub" hidden>No memos yet. Be the first.</p>
+        <div id="memo-list" class="note-list" aria-live="polite"></div>
+      </aside>
+
+    </div>
   </main>
 
   <script src="auth.js"></script>

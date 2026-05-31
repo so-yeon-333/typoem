@@ -634,3 +634,92 @@ hr {
   color: #722f37;
   border-bottom-color: #722f37;
 }
+
+/* ---- Two-column layout: poem + memos ---- */
+.poem-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
+  gap: 40px;
+  align-items: start;
+  margin-top: 8px;
+}
+
+/* ---- Panels (memo + drawer share styling) ---- */
+.panel-heading {
+  margin-bottom: 16px;
+  border-bottom: 1px solid #c9bca0;
+  padding-bottom: 8px;
+}
+
+.memo-compose {
+  margin-bottom: 24px;
+}
+
+/* The inline error line only takes space when it actually has text */
+.auth-error:empty {
+  display: none;
+}
+
+.note-input {
+  margin-bottom: 12px;
+}
+
+.note-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ---- A single memo / annotation card ---- */
+.note-card {
+  background: #faf4dd;
+  border: 1px solid #d8c9a6;
+  padding: 14px 16px;
+}
+
+.note-content {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 17px;
+  line-height: 1.45;
+  margin-bottom: 8px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.note-meta {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-family: 'IM Fell English SC', Georgia, serif;
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: #8a7a5e;
+  margin: 0;
+}
+
+.note-author {
+  color: #722f37;
+}
+
+.note-controls {
+  margin-left: auto;
+  display: inline-flex;
+  gap: 12px;
+}
+
+/* compact inline text button (used for edit/delete + logout) */
+.link-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: #5a4a35;
+}
+
+.link-btn:hover {
+  background: none;
+  color: #722f37;
+  text-decoration: underline;
+}
