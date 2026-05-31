@@ -67,3 +67,13 @@ async function updateAnnotation(id, content) {
 async function deleteAnnotation(id) {
     return await getDb().run(`DELETE FROM line_annotations WHERE id = ?`, [id]);
 }
+
+module.exports = {
+    findLineForRoomDate,
+    listForLine,
+    findById,
+    findByUserLine,
+    createAnnotation,
+    updateAnnotation,
+    deleteAnnotation,
+};
