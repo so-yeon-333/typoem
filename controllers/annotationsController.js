@@ -62,3 +62,28 @@ async function createAnnotation(req, res) {
         res.status(500).json({ error: "Server error" });
     }
 }
+
+// list annotations on a specific line within a room
+// [GET] /api/rooms/:roomId/lines/:lineId/annotations
+async function listAnnotations(req, res) {
+    try {
+        const room_id = parseId(req.params.roomId);
+        if (!room_id) return res.status(400).json({ error: "invalid room id" });
+
+        const line_id = parseId(req.params.lineId);
+        if (!line_id) return res.status(400).json({ error: "invalid line id" });
+
+        // must be a member of the room
+        const room = await roomsModel.findById(room_id);
+        if (!room) return res.status(404).json({ error: "Room not found" });
+
+        const isMember = await roomsModel.isMember(room_id, req.user.id);
+        if (!isMember) return res.status(403).json({ error: "You are not a member of this room" });
+
+        const annotations = await model.listForLine(room_id, line_id);
+        res.status(200).json(annotations);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Server error" });
+    }
+}
