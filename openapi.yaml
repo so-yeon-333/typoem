@@ -20,6 +20,8 @@ tags:
     description: Word definitions (cached proxy of the Free Dictionary API)
   - name: Memos
     description: Memos on a room's poem of the day
+  - name: Annotations
+    description: Line-level annotations on a room's poem of the day
 
 components:
   securitySchemes:
@@ -149,6 +151,36 @@ components:
           type: string
           description: Included in list responses (joined from users).
           example: Tester
+    Annotation:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        line_id:
+          type: integer
+          example: 2
+        line_number:
+          type: integer
+          description: The line's position in the poem (joined from poem_lines).
+          example: 2
+        room_id:
+          type: integer
+          example: 1
+        user_id:
+          type: integer
+          example: 4
+        content:
+          type: string
+          example: "This line is so striking."
+        created_at:
+          type: string
+          example: "2026-05-30 13:20:05"
+        author_nickname:
+          type: string
+          description: Included in responses (joined from users).
+          example: Tester
+
 
 paths:
   /api/auth/register:
@@ -528,6 +560,217 @@ paths:
                 $ref: '#/components/schemas/Error'
         '404':
           description: Room not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/rooms/{roomId}/lines/{lineId}/annotations:
+    post:
+      tags: [Annotations]
+      summary: Create an annotation on a line of the room's poem of the day
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: roomId
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+        - name: lineId
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 2
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [content]
+              properties:
+                content:
+                  type: string
+                  minLength: 1
+                  maxLength: 1000
+                  example: "This line is so striking."
+      responses:
+        '201':
+          description: Annotation created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Annotation'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Missing or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Not a member of this room
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Line not found in this room's poem today
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: You already annotated this line
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    get:
+      tags: [Annotations]
+      summary: List annotations on a line within a room
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: roomId
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+        - name: lineId
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 2
+      responses:
+        '200':
+          description: List of annotations (newest first)
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Annotation'
+        '401':
+          description: Missing or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Not a member of this room
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Room not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/annotations/{id}:
+    patch:
+      tags: [Annotations]
+      summary: Edit an annotation (author only)
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [content]
+              properties:
+                content:
+                  type: string
+                  minLength: 1
+                  maxLength: 1000
+                  example: "Edited: an even better reading of this line."
+      responses:
+        '200':
+          description: Annotation updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Annotation'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Missing or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Can only edit your own annotation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Annotation not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags: [Annotations]
+      summary: Delete an annotation (author only)
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '204':
+          description: Annotation deleted
+        '400':
+          description: Invalid annotation id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Missing or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Can only delete your own annotation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Annotation not found
           content:
             application/json:
               schema:
