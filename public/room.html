@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Today&rsquo;s Poem &middot; Typoem</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital@0;1&family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <!-- App stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Masthead -->
+  <header class="masthead">
+    <div class="masthead-inner">
+      <a href="/index.html" class="masthead-title">Typoem</a>
+      <nav class="masthead-nav">
+        <span id="nav-user" class="nav-user"></span>
+        <button type="button" id="logout-btn" class="link-btn">Log out</button>
+      </nav>
+    </div>
+    <p class="masthead-date" id="today"></p>
+  </header>
+
+  <main class="page">
+    <p class="back-link"><a href="/index.html">&larr; My Rooms</a></p>
+
+    <div class="page-headline">
+      <h1 id="room-name">&hellip;</h1>
+      <div class="rule-double"></div>
+    </div>
+
+    <p id="status" class="status" role="status"></p>
+
+    <div class="poem-layout">
+
+      <!-- Today's poem -->
+      <section class="poem-column" aria-label="Today's poem">
+        <article class="poem-sheet">
+          <h2 class="poem-title" id="poem-title"></h2>
+          <p class="poem-author" id="poem-author"></p>
+          <div class="rule-thin"></div>
+          <div class="poem-body" id="poem-body"></div>
+          <p class="poem-hint">Tap a word for the dictionary &middot; tap the bar beside a line to add a note</p>
+        </article>
+      </section>
+
+      <!-- Memos (full-poem notes) -->
+      <aside class="memo-column" aria-label="Memos">
+        <h4 class="panel-heading">Memos</h4>
+
+        <div class="memo-compose">
+          <textarea id="memo-input" class="note-input" rows="3"
+            placeholder="Leave a memo on today&rsquo;s poem&hellip;" maxlength="1000"></textarea>
+          <p id="memo-error" class="auth-error" role="alert"></p>
+          <button type="button" id="memo-submit" class="btn">Post Memo</button>
+        </div>
+
+        <p id="memo-empty" class="empty-sub" hidden>No memos yet. Be the first.</p>
+        <div id="memo-list" class="note-list" aria-live="polite"></div>
+      </aside>
+
+    </div>
+
+    <!-- Invite code: share to add more members -->
+    <section class="invite-share" id="invite-share" hidden>
+      <div class="rule-thin"></div>
+      <h4 class="panel-heading">Invite to this room</h4>
+      <p class="invite-lead">Share this code so others can join.</p>
+      <div class="invite-code-row">
+        <span class="invite-code" id="invite-code">&hellip;</span>
+        <button type="button" id="copy-code-btn" class="copy-btn">Copy</button>
+      </div>
+      <p id="copy-feedback" class="copy-feedback" hidden>Copied to clipboard.</p>
+    </section>
+
+  </main>
+
+  <!-- Annotation drawer -->
+  <div id="drawer-backdrop" class="drawer-backdrop"></div>
+  <aside id="drawer" class="drawer" aria-label="Line annotations">
+    <div class="drawer-head">
+      <h4 class="panel-heading">Annotations</h4>
+      <button type="button" id="drawer-close" class="link-btn">Close &times;</button>
+    </div>
+
+    <blockquote class="drawer-line" id="drawer-line"></blockquote>
+
+    <div class="memo-compose">
+      <textarea id="annotation-input" class="note-input" rows="3"
+        placeholder="Add a note on this line&hellip;" maxlength="1000"></textarea>
+      <p id="annotation-error" class="auth-error" role="alert"></p>
+      <button type="button" id="annotation-submit" class="btn">Post Note</button>
+    </div>
+
+    <p id="annotation-empty" class="empty-sub" hidden>No notes on this line yet.</p>
+    <div id="annotation-list" class="note-list" aria-live="polite"></div>
+  </aside>
+
+  <script src="auth.js"></script>
+  <script src="room.js"></script>
+
+</body>
+</html>

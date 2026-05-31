@@ -562,3 +562,321 @@ hr {
 }
 
 
+/* =================================================
+   Page: Room — Today's Poem (P13)
+   ================================================= */
+
+.back-link {
+  font-family: 'IM Fell English SC', Georgia, serif;
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+/* Thin single rule (companion to .rule-double) */
+.rule-thin {
+  border-top: 1px solid #c9bca0;
+  margin: 18px 0;
+}
+
+/* ---- Poem sheet ---- */
+.poem-sheet {
+  background: #faf4dd;
+  border: 1px solid #2b1f12;
+  padding: 40px 44px;
+  box-shadow: 3px 3px 0 #e0d5b8;
+}
+
+.poem-title {
+  text-align: center;
+}
+
+.poem-author {
+  text-align: center;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  color: #5a4a35;
+  margin-bottom: 4px;
+}
+
+.poem-body {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 20px;
+  line-height: 1.5;
+  margin: 8px 0 24px;
+}
+
+/* ---- A poem line (text only for now) ---- */
+.poem-line {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.line-text {
+  flex: 1 1 auto;
+  padding: 4px 0;
+}
+
+.poem-line-blank {
+  padding: 4px 0;
+}
+
+/* word span — dictionary territory. P12 binds its popup to .word (click). */
+.word {
+  cursor: help;
+  border-bottom: 1px dotted transparent;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.word:hover {
+  color: #722f37;
+  border-bottom-color: #722f37;
+}
+
+/* ---- Two-column layout: poem + memos ---- */
+.poem-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
+  gap: 40px;
+  align-items: start;
+  margin-top: 8px;
+}
+
+/* ---- Panels (memo + drawer share styling) ---- */
+.panel-heading {
+  margin-bottom: 16px;
+  border-bottom: 1px solid #c9bca0;
+  padding-bottom: 8px;
+}
+
+.memo-compose {
+  margin-bottom: 24px;
+}
+
+/* The inline error line only takes space when it actually has text */
+.auth-error:empty {
+  display: none;
+}
+
+.note-input {
+  margin-bottom: 12px;
+}
+
+.note-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ---- A single memo / annotation card ---- */
+.note-card {
+  background: #faf4dd;
+  border: 1px solid #d8c9a6;
+  padding: 14px 16px;
+}
+
+.note-content {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 17px;
+  line-height: 1.45;
+  margin-bottom: 8px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.note-meta {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-family: 'IM Fell English SC', Georgia, serif;
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: #8a7a5e;
+  margin: 0;
+}
+
+.note-author {
+  color: #722f37;
+}
+
+.note-controls {
+  margin-left: auto;
+  display: inline-flex;
+  gap: 12px;
+}
+
+/* compact inline text button (used for edit/delete + logout) */
+.link-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: #5a4a35;
+}
+
+.link-btn:hover {
+  background: none;
+  color: #722f37;
+  text-decoration: underline;
+}
+
+/* ---- A poem line: [ gutter handle ] [ poem text ] ---- */
+.line-gutter {
+  flex: 0 0 auto;
+  align-self: stretch;
+  display: flex;
+  align-items: stretch;
+  position: relative;
+  width: 24px;            /* generous tap target */
+  padding: 4px 0;
+  cursor: pointer;
+}
+
+/* the visible bar inside the hit area */
+.gutter-bar {
+  width: 3px;
+  margin-left: auto;      /* push the bar to the right edge, next to the text */
+  background-color: #c2b48f;   /* faint but visible against the paper */
+  border-radius: 2px;
+  transition: background-color 0.18s, width 0.18s;
+}
+
+.line-gutter:hover .gutter-bar,
+.line-gutter:focus-visible .gutter-bar {
+  background-color: #722f37;
+  width: 4px;
+}
+
+.line-gutter:focus-visible {
+  outline: none;
+}
+
+/* blank lines: no gutter handle, just vertical space */
+.poem-line-blank .line-gutter {
+  display: none;
+}
+
+/* ---- Annotation drawer (slides in from the right) ---- */
+.drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(43, 31, 18, 0.35);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s;
+  z-index: 40;
+}
+
+.drawer-backdrop.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 420px;
+  max-width: 90vw;
+  background: #f4ecd8;
+  border-left: 1px solid #2b1f12;
+  box-shadow: -4px 0 16px rgba(43, 31, 18, 0.18);
+  padding: 28px 28px 40px;
+  overflow-y: auto;
+  transform: translateX(100%);
+  transition: transform 0.28s ease;
+  z-index: 50;
+}
+
+.drawer.open {
+  transform: translateX(0);
+}
+
+.drawer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.drawer-line {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: 19px;
+  color: #2b1f12;
+  border-left: 3px solid #722f37;
+  padding: 6px 0 6px 14px;
+  margin: 0 0 20px;
+}
+
+/* lines that already have notes keep a wine-red gutter bar */
+.line-gutter.has-notes .gutter-bar {
+  background-color: #722f37;
+}
+
+/* sepia highlighter on lines that have notes — like an old marker pen.
+   flex-grow:0 so the highlight hugs the text instead of the whole column. */
+.line-text.noted {
+  flex: 0 1 auto;
+  align-self: flex-start;
+  background: linear-gradient(
+    transparent 12%,
+    rgba(201, 162, 39, 0.28) 12%,
+    rgba(201, 162, 39, 0.28) 92%,
+    transparent 92%
+  );
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+/* faint note count at the end of a noted line */
+.line-tally {
+  flex: 0 0 auto;
+  align-self: center;
+  margin-left: 8px;
+  font-family: 'IM Fell English SC', Georgia, serif;
+  font-size: 11px;
+  color: #b09a5e;
+  letter-spacing: 1px;
+}
+
+/* ---- Invite-code share block (bottom of the poem screen) ---- */
+.invite-share {
+  margin-top: 8px;
+}
+
+.invite-lead {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: 15px;
+  color: #5a4a35;
+  margin-bottom: 4px;
+}
+
+/* keep the code + button compact instead of stretching the full width */
+.invite-share .invite-code-row {
+  max-width: 420px;
+}
+
+.invite-share .invite-code {
+  letter-spacing: 6px;
+  font-size: 26px;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 860px) {
+  .poem-layout {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .poem-sheet {
+    padding: 28px 22px;
+  }
+  .poem-body {
+    font-size: 18px;
+  }
+}
