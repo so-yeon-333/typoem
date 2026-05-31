@@ -76,6 +76,55 @@ async function loadToday() {
   indexAnnotations(data.annotations || []);
   renderPoem(data.poem);
   renderMemos(data.memos || []);
+  loadInviteCode();
+}
+
+// The invite code isn't in the /today payload, but /api/rooms/mine returns it
+// for each of the user's rooms — pull this room's code from there.
+async function loadInviteCode() {
+  const res = await authFetch('/api/rooms/mine');
+  if (!res.ok) return;
+  const rooms = await res.json();
+
+  // find this room in the list
+  let room = null;
+  for (const r of rooms) {
+    if (String(r.id) === String(ROOM_ID)) {
+      room = r;
+    }
+  }
+  if (!room || !room.invite_code) return;
+
+  document.getElementById('invite-code').textContent = room.invite_code;
+  document.getElementById('invite-share').hidden = false;
+  wireCopyButton(room.invite_code);
+}
+
+// Copy the invite code to the clipboard (same fallback pattern as create-room.js).
+function wireCopyButton(code) {
+  const btn = document.getElementById('copy-code-btn');
+  const feedback = document.getElementById('copy-feedback');
+  const codeEl = document.getElementById('invite-code');
+
+  btn.addEventListener('click', async function () {
+    try {
+      await navigator.clipboard.writeText(code);
+    } catch (err) {
+      const range = document.createRange();
+      range.selectNodeContents(codeEl);
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+      document.execCommand('copy');
+      sel.removeAllRanges();
+    }
+    btn.textContent = 'Copied';
+    feedback.hidden = false;
+    setTimeout(function () {
+      btn.textContent = 'Copy';
+      feedback.hidden = true;
+    }, 3000);
+  });
 }
 
 // Group the flat annotations array by line_id.
@@ -90,6 +139,8 @@ function indexAnnotations(list) {
 // =====================================================================
 //  Poem rendering
 // =====================================================================
+// Each content line becomes a tappable row. Words within a line are wrapped in
+// <span class="word" data-word="..."> so the dictionary popup (P12) can hook in.
 function renderPoem(poem) {
   const titleEl = document.getElementById('poem-title');
   const authorEl = document.getElementById('poem-author');
@@ -107,7 +158,7 @@ function renderPoem(poem) {
   bodyEl.innerHTML = lines.map(renderLine).join('');
 
   // The left gutter handle opens the annotation drawer.
-  // The poem text stays free for the dictionary popup (P12) — clicking a
+  // The poem text itself stays free for the dictionary popup (P12) — clicking a
   // word does NOT open the drawer, so the two actions never overlap.
   bodyEl.querySelectorAll('.line-gutter[data-line-id]').forEach((el) => {
     el.addEventListener('click', () => openDrawer(Number(el.dataset.lineId)));
@@ -120,9 +171,12 @@ function renderPoem(poem) {
   });
 }
 
-// One poem line: [ gutter handle ] [ poem text ] [ note count ].
-// Lines that already have notes get a sepia highlight + a faint count.
-// Blank lines render as spacers (no gutter).
+// One poem line. Blank lines render as spacers (no gutter, no annotations).
+// Layout: [ gutter handle ] [ poem text ] [ note count ]
+//   - gutter  → tap target for the annotation drawer
+//   - text    → dictionary territory (words wrapped for P12); gets a sepia
+//               highlight when the line has notes
+//   - count   → faint number at the end of the line
 function renderLine(line) {
   if (!hasContent(line.text)) {
     return '<div class="poem-line poem-line-blank"><span class="line-text">&nbsp;</span></div>';
@@ -146,7 +200,9 @@ function renderLine(line) {
   `;
 }
 
-// Wrap each word in a span the dictionary popup (P12) can attach to.
+// Wrap each word in a span the dictionary popup can attach to.
+// Split on spaces; punctuation stays attached to the word (the dictionary
+// API tolerates it well enough for our needs).
 function wrapWords(text) {
   const words = text.split(' ');
   const spans = [];
@@ -176,6 +232,7 @@ function renderMemos(memos) {
   emptyEl.hidden = true;
   listEl.innerHTML = memos.map(memoItem).join('');
 
+  // Owner-only edit/delete controls
   listEl.querySelectorAll('[data-memo-edit]').forEach((b) =>
     b.addEventListener('click', () => editMemo(Number(b.dataset.memoEdit))));
   listEl.querySelectorAll('[data-memo-del]').forEach((b) =>
@@ -392,11 +449,13 @@ async function deleteAnnotation(id) {
   await reloadAnnotations(currentLineId);
 }
 
-// Refresh one line's annotations from the server, then re-render the drawer.
+// Refresh one line's annotations from the server, update state + drawer + badge.
 async function reloadAnnotations(lineId) {
   if (lineId == null) return;
 
-  const res = await authFetch(`/api/rooms/${ROOM_ID}/lines/${lineId}/annotations`);
+  const res = await authFetch(
+    `/api/rooms/${ROOM_ID}/lines/${lineId}/annotations`
+  );
   if (!res.ok) return;
   const list = await res.json();
   annotationsByLine[lineId] = list;

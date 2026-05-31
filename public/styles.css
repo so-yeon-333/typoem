@@ -843,3 +843,26 @@ hr {
   color: #b09a5e;
   letter-spacing: 1px;
 }
+
+/* ---- Invite-code share block (bottom of the poem screen) ---- */
+.invite-share {
+  margin-top: 8px;
+}
+
+.invite-lead {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: 15px;
+  color: #5a4a35;
+  margin-bottom: 4px;
+}
+
+/* keep the code + button compact instead of stretching the full width */
+.invite-share .invite-code-row {
+  max-width: 420px;
+}
+
+.invite-share .invite-code {
+  letter-spacing: 6px;
+  font-size: 26px;
+}
