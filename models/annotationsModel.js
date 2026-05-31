@@ -24,7 +24,7 @@ async function listForLine(room_id, line_id) {
          JOIN poem_lines pl ON pl.id = a.line_id
          JOIN users u ON u.id = a.user_id
          WHERE a.room_id = ? AND a.line_id = ?
-         ORDER BY a.created_at DESC, a.id DESC`,
+         ORDER BY a.created_at ASC, a.id ASC`,
         [room_id, line_id]
     );
 }
