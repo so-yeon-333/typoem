@@ -120,20 +120,28 @@ function renderPoem(poem) {
   });
 }
 
-// One poem line: [ gutter handle ] [ poem text ].
+// One poem line: [ gutter handle ] [ poem text ] [ note count ].
+// Lines that already have notes get a sepia highlight + a faint count.
 // Blank lines render as spacers (no gutter).
 function renderLine(line) {
   if (!hasContent(line.text)) {
     return '<div class="poem-line poem-line-blank"><span class="line-text">&nbsp;</span></div>';
   }
+
+  const count = (annotationsByLine[line.id] || []).length;
+  const noted = count > 0 ? ' has-notes' : '';
+  const hl = count > 0 ? ' noted' : '';
+  const tally = count > 0 ? `<span class="line-tally">${count}</span>` : '';
+
   return `
     <div class="poem-line" data-line-id="${line.id}">
-      <span class="line-gutter" data-line-id="${line.id}"
+      <span class="line-gutter${noted}" data-line-id="${line.id}"
             role="button" tabindex="0"
             title="Notes on this line" aria-label="Notes on this line">
         <span class="gutter-bar"></span>
       </span>
-      <span class="line-text">${wrapWords(line.text)}</span>
+      <span class="line-text${hl}">${wrapWords(line.text)}</span>
+      ${tally}
     </div>
   `;
 }
@@ -393,6 +401,31 @@ async function reloadAnnotations(lineId) {
   const list = await res.json();
   annotationsByLine[lineId] = list;
   renderAnnotations(list);
+  updateLineBadge(lineId, list.length);
+}
+
+// Keep the line's note indicators in sync: gutter tint, the sepia highlight
+// on the text, and the faint count at the end of the line.
+function updateLineBadge(lineId, count) {
+  const lineEl = document.querySelector(`.poem-line[data-line-id="${lineId}"]`);
+  if (!lineEl) return;
+
+  const gutter = lineEl.querySelector('.line-gutter');
+  const text = lineEl.querySelector('.line-text');
+  if (gutter) gutter.classList.toggle('has-notes', count > 0);
+  if (text) text.classList.toggle('noted', count > 0);
+
+  let tally = lineEl.querySelector('.line-tally');
+  if (count > 0) {
+    if (!tally) {
+      tally = document.createElement('span');
+      tally.className = 'line-tally';
+      lineEl.appendChild(tally);
+    }
+    tally.textContent = count;
+  } else if (tally) {
+    tally.remove();
+  }
 }
 
 // =====================================================================
