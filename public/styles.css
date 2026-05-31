@@ -866,3 +866,17 @@ hr {
   letter-spacing: 6px;
   font-size: 26px;
 }
+
+/* ---- Responsive ---- */
+@media (max-width: 860px) {
+  .poem-layout {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .poem-sheet {
+    padding: 28px 22px;
+  }
+  .poem-body {
+    font-size: 18px;
+  }
+}
