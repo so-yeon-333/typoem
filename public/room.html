@@ -46,6 +46,7 @@
           <p class="poem-author" id="poem-author"></p>
           <div class="rule-thin"></div>
           <div class="poem-body" id="poem-body"></div>
+          <p class="poem-hint">Tap a word for the dictionary &middot; tap the bar beside a line to add a note</p>
         </article>
       </section>
 
@@ -66,6 +67,27 @@
 
     </div>
   </main>
+
+  <!-- Annotation drawer -->
+  <div id="drawer-backdrop" class="drawer-backdrop"></div>
+  <aside id="drawer" class="drawer" aria-label="Line annotations">
+    <div class="drawer-head">
+      <h4 class="panel-heading">Annotations</h4>
+      <button type="button" id="drawer-close" class="link-btn">Close &times;</button>
+    </div>
+
+    <blockquote class="drawer-line" id="drawer-line"></blockquote>
+
+    <div class="memo-compose">
+      <textarea id="annotation-input" class="note-input" rows="3"
+        placeholder="Add a note on this line&hellip;" maxlength="1000"></textarea>
+      <p id="annotation-error" class="auth-error" role="alert"></p>
+      <button type="button" id="annotation-submit" class="btn">Post Note</button>
+    </div>
+
+    <p id="annotation-empty" class="empty-sub" hidden>No notes on this line yet.</p>
+    <div id="annotation-list" class="note-list" aria-live="polite"></div>
+  </aside>
 
   <script src="auth.js"></script>
   <script src="room.js"></script>
