@@ -87,3 +87,36 @@ async function listAnnotations(req, res) {
         res.status(500).json({ error: "Server error" });
     }
 }
+
+// update an annotation's content (author only)
+// [PATCH] /api/annotations/:id
+async function updateAnnotation(req, res) {
+    try {
+        const annotation_id = parseId(req.params.id);
+        if (!annotation_id) return res.status(400).json({ error: "invalid annotation id" });
+
+        const annotation = await model.findById(annotation_id);
+        if (!annotation) return res.status(404).json({ error: "Annotation not found" });
+
+        // only the author can edit
+        if (annotation.user_id !== req.user.id) {
+            return res.status(403).json({ error: "You can only edit your own annotation" });
+        }
+
+        // validate new content
+        const { content } = req.body;
+        if (!content || typeof content !== "string") {
+            return res.status(400).json({ error: "content required" });
+        }
+        const trimmed = content.trim();
+        if (trimmed.length < 1 || trimmed.length > 1000) {
+            return res.status(400).json({ error: "content must be 1-1000 characters" });
+        }
+
+        const updated = await model.updateAnnotation(annotation_id, trimmed);
+        res.status(200).json(updated);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Server error" });
+    }
+}
