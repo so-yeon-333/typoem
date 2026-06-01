@@ -123,7 +123,7 @@ function wireCopyButton(code) {
     setTimeout(function () {
       btn.textContent = 'Copy';
       feedback.hidden = true;
-    }, 3000);
+    }, 5000);
   });
 }
 

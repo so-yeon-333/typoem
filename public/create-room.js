@@ -70,7 +70,7 @@ form.addEventListener('submit', async function (e) {
       setTimeout(function () {
         copyBtn.textContent = 'Copy';
         copyFeedback.classList.add('hidden');
-      }, 20000);
+      }, 5000);
     });
 
   } catch (err) {
