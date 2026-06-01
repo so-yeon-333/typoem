@@ -309,7 +309,7 @@ hr {
   color: #5a4a35;
 }
 .masthead-date {
-  font-family: 'IM Fell English SC', Georgia, serif;
+  font-family: 'Gentium Book Plus', Georgia, serif;
   text-transform: uppercase;
   letter-spacing: 3px;
   font-size: 12px;
@@ -462,7 +462,7 @@ hr {
 
 /* ---- Invite code display + back link (create-room / join) ---- */
 .invite-code {
-  font-family: 'IM Fell English SC', Georgia, serif;
+  font-family: 'Gentium Book Plus', Georgia, serif;
   letter-spacing: 8px;
   font-size: 34px;
   text-align: center;
@@ -571,6 +571,8 @@ hr {
   font-size: 12px;
   letter-spacing: 2px;
   text-transform: uppercase;
+  text-align: left;
+  margin-top: 0;
   margin-bottom: 12px;
 }
 
@@ -655,6 +657,15 @@ hr {
   margin-bottom: 24px;
 }
 
+/* Center the memo column: MEMOS heading, Post Memo button, empty text */
+.memo-column .panel-heading,
+.memo-column .empty-sub {
+  text-align: center;
+}
+.memo-column .memo-compose {
+  text-align: center;
+}
+
 /* The inline error line only takes space when it actually has text */
 .auth-error:empty {
   display: none;
@@ -691,7 +702,7 @@ hr {
   align-items: baseline;
   gap: 10px;
   flex-wrap: wrap;
-  font-family: 'IM Fell English SC', Georgia, serif;
+  font-family: 'Gentium Book Plus', Georgia, serif;
   font-size: 11px;
   letter-spacing: 1px;
   color: #8a7a5e;
@@ -838,9 +849,9 @@ hr {
   flex: 0 0 auto;
   align-self: center;
   margin-left: 8px;
-  font-family: 'IM Fell English SC', Georgia, serif;
-  font-size: 11px;
-  color: #b09a5e;
+  font-family: 'Gentium Book Plus', Georgia, serif;
+  font-size: 16px;
+  color: #9a803f;
   letter-spacing: 1px;
 }
 
