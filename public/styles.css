@@ -571,6 +571,8 @@ hr {
   font-size: 12px;
   letter-spacing: 2px;
   text-transform: uppercase;
+  text-align: left;
+  margin-top: 0;
   margin-bottom: 12px;
 }
 
