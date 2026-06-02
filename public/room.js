@@ -490,10 +490,15 @@ function updateLineBadge(lineId, count) {
 // =====================================================================
 //  Helpers + wiring
 // =====================================================================
-// created_at looks like "2026-05-31 13:16:03"; show just the date part.
+// created_at looks like "2026-05-31 13:16:03"
 function formatDate(created_at) {
   if (!created_at) return '';
-  return created_at.slice(0, 10);
+  // created_at is stored as UTC ('YYYY-MM-DD HH:MM:SS'); mark it as UTC so the
+  // browser converts it to the viewer's local time zone.
+  const d = new Date(created_at.replace(' ', 'T') + 'Z');
+  if (isNaN(d.getTime())) return created_at.slice(0, 10);
+  const p = (n) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
 }
 
 document.getElementById('memo-submit').addEventListener('click', submitMemo);
