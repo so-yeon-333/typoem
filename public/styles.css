@@ -629,7 +629,7 @@ hr {
 .poem-line {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
+  gap: 6px;
 }
 
 .line-text {
