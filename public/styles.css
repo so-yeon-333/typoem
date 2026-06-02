@@ -576,6 +576,12 @@ hr {
   margin-bottom: 12px;
 }
 
+/* Lift the room headline up for better vertical balance (room page only) */
+#room-name {
+  margin-top: 4px;
+  margin-bottom: 0;
+}
+
 /* Thin single rule (companion to .rule-double) */
 .rule-thin {
   border-top: 1px solid #c9bca0;
