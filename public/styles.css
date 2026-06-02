@@ -586,8 +586,18 @@ hr {
 .poem-sheet {
   background: #faf4dd;
   border: 1px solid #2b1f12;
-  padding: 40px 44px;
+  padding: 40px 44px 48px;
   box-shadow: 3px 3px 0 #e0d5b8;
+}
+
+/* dictionary / annotation hint under the poem — give it breathing room */
+.poem-hint {
+  margin-top: 28px;
+  text-align: center;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: 14px;
+  color: #9a8a6f;
 }
 
 .poem-title {
