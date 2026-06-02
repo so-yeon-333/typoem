@@ -266,7 +266,7 @@ async function submitMemo() {
   err.textContent = '';
 
   if (content.length < 1 || content.length > 1000) {
-    err.textContent = 'Memo must be 1\u20131000 characters.';
+    showError(err, 'Memo must be 1\u20131000 characters.');
     return;
   }
 
@@ -276,7 +276,7 @@ async function submitMemo() {
   });
   if (!res.ok) {
     const data = await res.json();
-    err.textContent = data.error || 'Could not post memo.';
+    showError(err, data.error || 'Could not post memo.');
     return;
   }
   input.value = '';
@@ -396,7 +396,7 @@ async function submitAnnotation() {
 
   if (currentLineId == null) return;
   if (content.length < 1 || content.length > 1000) {
-    err.textContent = 'Note must be 1\u20131000 characters.';
+    showError(err, 'Note must be 1\u20131000 characters.');
     return;
   }
 
@@ -407,7 +407,7 @@ async function submitAnnotation() {
   if (!res.ok) {
     const data = await res.json();
     // 409 = already annotated this line (one per user per line)
-    err.textContent = data.error || 'Could not post note.';
+    showError(err, data.error || 'Could not post note.');
     return;
   }
   input.value = '';
@@ -499,6 +499,16 @@ function formatDate(created_at) {
   if (isNaN(d.getTime())) return created_at.slice(0, 10);
   const p = (n) => String(n).padStart(2, '0');
   return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
+}
+
+// Show an inline error message that clears itself after 5 seconds.
+function showError(el, message) {
+  el.textContent = message;
+  if (el._clearTimer) clearTimeout(el._clearTimer);
+  el._clearTimer = setTimeout(() => {
+    el.textContent = '';
+    el._clearTimer = null;
+  }, 5000);
 }
 
 document.getElementById('memo-submit').addEventListener('click', submitMemo);
