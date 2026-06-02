@@ -830,6 +830,14 @@ hr {
   justify-content: space-between;
 }
 
+/* Bigger, easier-to-tap Close button in the annotation drawer */
+#drawer-close {
+  font-size: 16px;
+  letter-spacing: 1px;
+  padding: 8px 10px;
+  margin: -8px -10px -8px 0;   /* keep visual alignment despite the padding */
+}
+
 .drawer-line {
   font-family: 'Cormorant Garamond', Georgia, serif;
   font-style: italic;
