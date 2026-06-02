@@ -576,6 +576,12 @@ hr {
   margin-bottom: 12px;
 }
 
+/* Lift the room headline up for better vertical balance (room page only) */
+#room-name {
+  margin-top: 4px;
+  margin-bottom: 0;
+}
+
 /* Thin single rule (companion to .rule-double) */
 .rule-thin {
   border-top: 1px solid #c9bca0;
@@ -586,8 +592,18 @@ hr {
 .poem-sheet {
   background: #faf4dd;
   border: 1px solid #2b1f12;
-  padding: 40px 44px;
+  padding: 40px 44px 48px;
   box-shadow: 3px 3px 0 #e0d5b8;
+}
+
+/* dictionary / annotation hint under the poem — give it breathing room */
+.poem-hint {
+  margin-top: 28px;
+  text-align: center;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: 14px;
+  color: #9a8a6f;
 }
 
 .poem-title {
@@ -613,7 +629,7 @@ hr {
 .poem-line {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
+  gap: 6px;
 }
 
 .line-text {
@@ -812,6 +828,14 @@ hr {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+/* Bigger, easier-to-tap Close button in the annotation drawer */
+#drawer-close {
+  font-size: 16px;
+  letter-spacing: 1px;
+  padding: 8px 10px;
+  margin: -8px -10px -8px 0;   /* keep visual alignment despite the padding */
 }
 
 .drawer-line {
