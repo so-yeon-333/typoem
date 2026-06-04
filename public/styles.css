@@ -309,7 +309,7 @@ hr {
   color: #5a4a35;
 }
 .masthead-date {
-  font-family: 'IM Fell English SC', Georgia, serif;
+  font-family: 'Gentium Book Plus', Georgia, serif;
   text-transform: uppercase;
   letter-spacing: 3px;
   font-size: 12px;
@@ -462,7 +462,7 @@ hr {
 
 /* ---- Invite code display + back link (create-room / join) ---- */
 .invite-code {
-  font-family: 'IM Fell English SC', Georgia, serif;
+  font-family: 'Gentium Book Plus', Georgia, serif;
   letter-spacing: 8px;
   font-size: 34px;
   text-align: center;
@@ -571,7 +571,15 @@ hr {
   font-size: 12px;
   letter-spacing: 2px;
   text-transform: uppercase;
+  text-align: left;
+  margin-top: 0;
   margin-bottom: 12px;
+}
+
+/* Lift the room headline up for better vertical balance (room page only) */
+#room-name {
+  margin-top: 4px;
+  margin-bottom: 0;
 }
 
 /* Thin single rule (companion to .rule-double) */
@@ -584,8 +592,18 @@ hr {
 .poem-sheet {
   background: #faf4dd;
   border: 1px solid #2b1f12;
-  padding: 40px 44px;
+  padding: 40px 44px 48px;
   box-shadow: 3px 3px 0 #e0d5b8;
+}
+
+/* dictionary / annotation hint under the poem — give it breathing room */
+.poem-hint {
+  margin-top: 28px;
+  text-align: center;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: 14px;
+  color: #9a8a6f;
 }
 
 .poem-title {
@@ -611,7 +629,7 @@ hr {
 .poem-line {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
+  gap: 6px;
 }
 
 .line-text {
@@ -655,6 +673,15 @@ hr {
   margin-bottom: 24px;
 }
 
+/* Center the memo column: MEMOS heading, Post Memo button, empty text */
+.memo-column .panel-heading,
+.memo-column .empty-sub {
+  text-align: center;
+}
+.memo-column .memo-compose {
+  text-align: center;
+}
+
 /* The inline error line only takes space when it actually has text */
 .auth-error:empty {
   display: none;
@@ -691,7 +718,7 @@ hr {
   align-items: baseline;
   gap: 10px;
   flex-wrap: wrap;
-  font-family: 'IM Fell English SC', Georgia, serif;
+  font-family: 'Gentium Book Plus', Georgia, serif;
   font-size: 11px;
   letter-spacing: 1px;
   color: #8a7a5e;
@@ -803,6 +830,14 @@ hr {
   justify-content: space-between;
 }
 
+/* Bigger, easier-to-tap Close button in the annotation drawer */
+#drawer-close {
+  font-size: 16px;
+  letter-spacing: 1px;
+  padding: 8px 10px;
+  margin: -8px -10px -8px 0;   /* keep visual alignment despite the padding */
+}
+
 .drawer-line {
   font-family: 'Cormorant Garamond', Georgia, serif;
   font-style: italic;
@@ -838,9 +873,9 @@ hr {
   flex: 0 0 auto;
   align-self: center;
   margin-left: 8px;
-  font-family: 'IM Fell English SC', Georgia, serif;
-  font-size: 11px;
-  color: #b09a5e;
+  font-family: 'Gentium Book Plus', Georgia, serif;
+  font-size: 16px;
+  color: #9a803f;
   letter-spacing: 1px;
 }
 
