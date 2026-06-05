@@ -16,6 +16,11 @@ function authenticate(req, res, next) {
         console.error(err);
         return res.status(401).json({error: "invalid or expired token"});
     }
+
+    const user = await usersModel.findById(payload.id);
+    if (!user) return res.status(401).json({ error: "account no longer exists" });
+    req.user = { id: user.id, username: user.username };
+    next();
 }
 
 module.exports = { authenticate };
