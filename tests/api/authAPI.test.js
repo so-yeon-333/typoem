@@ -1,18 +1,39 @@
 const request = require('supertest');
 const path = require('path');
 
-// use an in-memory DB for every test run
-process.env.DB_PATH = ':memory:';
 process.env.JWT_SECRET = 'test-secret';
 process.env.JWT_EXPIRES_IN = '1h';
 
-// app must be required AFTER env vars are set
-const app = require('../../app');
-const { initDb } = require('../../db');
-
-beforeAll(async () => {
-  await initDb();
+// Mock the users model with a tiny in-memory store so the tests never touch
+// SQLite. It mimics the real model (auto-increment id + unique username), so
+// the register -> login -> /me flow below works exactly as before.
+jest.mock('../../models/usersModel', () => {
+  class UsernameTakenError extends Error {
+    constructor(username) {
+      super(`Username "${username}" is already taken`);
+      this.name = 'UsernameTakenError';
+    }
+  }
+  const users = [];
+  return {
+    UsernameTakenError,
+    create: jest.fn(async ({ username, nickname, password_hash }) => {
+      if (users.some((u) => u.username === username)) {
+        throw new UsernameTakenError(username);
+      }
+      const user = { id: users.length + 1, username, nickname, password_hash };
+      users.push(user);
+      return { lastID: user.id };
+    }),
+    findByUsername: jest.fn(async (username) =>
+      users.find((u) => u.username === username)
+    ),
+    findById: jest.fn(async (id) => users.find((u) => u.id === id)),
+  };
 });
+
+// app must be required AFTER the mock is registered
+const app = require('../../app');
 
 // POST /api/auth/register
 describe('POST /api/auth/register', () => {
