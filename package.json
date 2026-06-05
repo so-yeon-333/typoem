@@ -8,8 +8,8 @@
     "test": "tests"
   },
   "scripts": {
-    "start": "node app.js",
-    "dev": "node --watch app.js",
+    "start": "node server.js",
+    "dev": "node --watch server.js",
     "test": "jest",
     "test:coverage": "jest --coverage",
     "fetch-poems": "node scripts/fetch-poems.js"
