@@ -6,7 +6,6 @@ const app = require("../../app");
 // the file, so it runs before app.js finishes loading the controllers.
 jest.mock("../../models/roomsModel");
 const roomsModel = require("../../models/roomsModel");
-s
 // authMiddleware now looks up the token's user in the DB (#41),
 // so the users model must be mocked here too.
 jest.mock("../../models/usersModel");
