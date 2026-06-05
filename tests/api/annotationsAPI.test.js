@@ -29,6 +29,7 @@ const BASE = "/api/rooms/5/lines/9/annotations";
 // Reset mock state between tests so calls/return values don't leak.
 beforeEach(() => {
   jest.clearAllMocks();
+  usersModel.findById.mockResolvedValue({ id: 1, username: "alice", nickname: "Alice" });
 });
 
 // -----------------------------------------------------------------------------
