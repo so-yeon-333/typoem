@@ -6,6 +6,11 @@ const app = require("../../app");
 // the file, so it runs before app.js finishes loading the controllers.
 jest.mock("../../models/roomsModel");
 const roomsModel = require("../../models/roomsModel");
+s
+// authMiddleware now looks up the token's user in the DB (#41),
+// so the users model must be mocked here too.
+jest.mock("../../models/usersModel");
+const usersModel = require("../../models/usersModel");
 
 // Sign a valid token once. JWT_SECRET is set by tests/setup.js before this
 // file loads, so we can sign tokens directly without going through login.
@@ -18,6 +23,7 @@ const token = jwt.sign(
 // Reset mock state between tests so calls/return values don't leak.
 beforeEach(() => {
   jest.clearAllMocks();
+  usersModel.findById.mockResolvedValue({ id: 1, username: "alice", nickname: "Alice" });
 });
 
 // -----------------------------------------------------------------------------
