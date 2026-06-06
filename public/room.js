@@ -301,41 +301,132 @@ async function submitMemo() {
   await reloadMemos();
 }
 
-async function editMemo(id) {
-  const card = document.querySelector(`.note-card[data-memo-id="${id}"] .note-content`);
-  const current = card ? card.textContent : '';
-  const next = window.prompt('Edit your memo:', current);
-  if (next === null) return;                 // cancelled
-  const trimmed = next.trim();
-  if (trimmed.length < 1 || trimmed.length > 1000) {
-    window.alert('Memo must be 1\u20131000 characters.');
-    return;
+// ---- Shared inline edit/delete helpers for memo & annotation cards ----
+// cfg: { id, selector, apiPath, noun, reload }
+//   selector -> attribute that identifies the card (e.g. 'data-memo-id')
+//   apiPath  -> resource path (e.g. '/api/memos')
+//   noun     -> word shown in messages ('memo' or 'note')
+//   reload   -> function to refresh the list after a change
+function startInlineEdit(cfg) {
+  const card = document.querySelector(`.note-card[${cfg.selector}="${cfg.id}"]`);
+  if (!card) return;
+  const contentEl = card.querySelector('.note-content');
+  if (!contentEl || card.querySelector('.note-edit')) return;  // already editing
+
+  const Noun = cfg.noun.charAt(0).toUpperCase() + cfg.noun.slice(1);
+  const current = contentEl.textContent;
+
+  const editor = document.createElement('div');
+  editor.className = 'note-edit';
+  editor.innerHTML = `
+    <textarea class="note-edit-input" maxlength="1000" rows="3"></textarea>
+    <p class="note-edit-error"></p>
+    <div class="note-edit-actions">
+      <button type="button" class="btn-sm note-edit-save">Save</button>
+      <button type="button" class="btn-sm note-edit-cancel">Cancel</button>
+    </div>
+  `;
+  const textarea = editor.querySelector('.note-edit-input');
+  const errEl = editor.querySelector('.note-edit-error');
+  textarea.value = current;
+
+  contentEl.hidden = true;
+  contentEl.insertAdjacentElement('afterend', editor);
+  textarea.focus();
+
+  function cancel() {
+    editor.remove();
+    contentEl.hidden = false;
   }
 
-  const res = await authFetch(`/api/memos/${id}`, {
-    method: 'PATCH',
-    body: JSON.stringify({ content: trimmed }),
+  editor.querySelector('.note-edit-cancel').addEventListener('click', cancel);
+
+  // Esc cancels, Cmd/Ctrl+Enter saves
+  textarea.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      cancel();
+    } else if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+      e.preventDefault();
+      editor.querySelector('.note-edit-save').click();
+    }
   });
-  if (!res.ok) {
-    const data = await res.json();
-    window.alert(data.error || 'Could not update memo.');
-    return;
-  }
-  await reloadMemos();
+
+  editor.querySelector('.note-edit-save').addEventListener('click', async () => {
+    const trimmed = textarea.value.trim();
+    if (trimmed.length < 1 || trimmed.length > 1000) {
+      errEl.textContent = `${Noun} must be 1\u20131000 characters.`;
+      return;
+    }
+    const res = await authFetch(`${cfg.apiPath}/${cfg.id}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ content: trimmed }),
+    });
+    if (!res.ok) {
+      const data = await res.json();
+      errEl.textContent = data.error || `Could not update ${cfg.noun}.`;
+      return;
+    }
+    await cfg.reload();
+  });
 }
 
-async function deleteMemo(id) {
-  if (!window.confirm('Delete this memo?')) return;
+function startInlineDelete(cfg) {
+  const card = document.querySelector(`.note-card[${cfg.selector}="${cfg.id}"]`);
+  if (!card) return;
+  const contentEl = card.querySelector('.note-content');
+  if (!contentEl || card.querySelector('.note-confirm')) return;  // already confirming
 
-  const res = await authFetch(`/api/memos/${id}`, { method: 'DELETE' });
-  if (!res.ok && res.status !== 204) {
-    const data = await res.json();
-    window.alert(data.error || 'Could not delete memo.');
-    return;
+  const box = document.createElement('div');
+  box.className = 'note-confirm';
+  box.innerHTML = `
+    <span class="note-confirm-text">Delete this ${cfg.noun}?</span>
+    <span class="note-confirm-actions">
+      <button type="button" class="btn-sm btn-danger note-confirm-yes">Delete</button>
+      <button type="button" class="btn-sm note-confirm-no">Cancel</button>
+    </span>
+  `;
+  contentEl.hidden = true;
+  contentEl.insertAdjacentElement('afterend', box);
+
+  function cancel() {
+    box.remove();
+    contentEl.hidden = false;
   }
-  await reloadMemos();
+
+  box.querySelector('.note-confirm-no').addEventListener('click', cancel);
+
+  box.querySelector('.note-confirm-yes').addEventListener('click', async () => {
+    const res = await authFetch(`${cfg.apiPath}/${cfg.id}`, { method: 'DELETE' });
+    if (!res.ok && res.status !== 204) {
+      const data = await res.json();
+      box.querySelector('.note-confirm-text').textContent =
+        data.error || `Could not delete ${cfg.noun}.`;
+      return;
+    }
+    await cfg.reload();
+  });
 }
 
+function editMemo(id) {
+  startInlineEdit({
+    id,
+    selector: 'data-memo-id',
+    apiPath: '/api/memos',
+    noun: 'memo',
+    reload: reloadMemos,
+  });
+}
+
+function deleteMemo(id) {
+  startInlineDelete({
+    id,
+    selector: 'data-memo-id',
+    apiPath: '/api/memos',
+    noun: 'memo',
+    reload: reloadMemos,
+  });
+}
 // Refresh just the memo list (after create/edit/delete).
 async function reloadMemos() {
   const res = await authFetch(`/api/rooms/${ROOM_ID}/memos`);
@@ -432,39 +523,25 @@ async function submitAnnotation() {
   await reloadAnnotations(currentLineId);
 }
 
-async function editAnnotation(id) {
-  const card = document.querySelector(`.note-card[data-anno-id="${id}"] .note-content`);
-  const current = card ? card.textContent : '';
-  const next = window.prompt('Edit your note:', current);
-  if (next === null) return;
-  const trimmed = next.trim();
-  if (trimmed.length < 1 || trimmed.length > 1000) {
-    window.alert('Note must be 1\u20131000 characters.');
-    return;
-  }
-
-  const res = await authFetch(`/api/annotations/${id}`, {
-    method: 'PATCH',
-    body: JSON.stringify({ content: trimmed }),
+function editAnnotation(id) {
+  startInlineEdit({
+    id,
+    selector: 'data-anno-id',
+    apiPath: '/api/annotations',
+    noun: 'note',
+    reload: () => reloadAnnotations(currentLineId),
   });
-  if (!res.ok) {
-    const data = await res.json();
-    window.alert(data.error || 'Could not update note.');
-    return;
-  }
-  await reloadAnnotations(currentLineId);
 }
 
-async function deleteAnnotation(id) {
-  if (!window.confirm('Delete this note?')) return;
 
-  const res = await authFetch(`/api/annotations/${id}`, { method: 'DELETE' });
-  if (!res.ok && res.status !== 204) {
-    const data = await res.json();
-    window.alert(data.error || 'Could not delete note.');
-    return;
-  }
-  await reloadAnnotations(currentLineId);
+function deleteAnnotation(id) {
+  startInlineDelete({
+    id,
+    selector: 'data-anno-id',
+    apiPath: '/api/annotations',
+    noun: 'note',
+    reload: () => reloadAnnotations(currentLineId),
+  });
 }
 
 // Refresh one line's annotations from the server, update state + drawer + badge.

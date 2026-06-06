@@ -1066,3 +1066,96 @@ hr {
     max-width: calc(100vw - 32px);
   }
 }
+
+/* ---- Inline note editing (P13 #6) ---- */
+.note-edit {
+  margin-bottom: 8px;
+}
+
+.note-edit-input {
+  width: 100%;
+  box-sizing: border-box;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 17px;
+  line-height: 1.45;
+  color: #2b1f12;
+  background: #fffdf5;
+  border: 1px solid #d8c9a6;
+  padding: 8px 10px;
+  resize: vertical;
+}
+
+.note-edit-input:focus {
+  outline: none;
+  border-color: #722f37;
+}
+
+.note-edit-error {
+  color: #722f37;
+  font-family: 'Gentium Book Plus', Georgia, serif;
+  font-size: 12px;
+  margin: 6px 0 0;
+  min-height: 1em;
+}
+
+.note-edit-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+/* compact button for inline note actions */
+.btn-sm {
+  font-family: 'IM Fell English SC', Georgia, serif;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: 1px solid #2b1f12;
+  background: #f4ecd8;
+  color: #2b1f12;
+  padding: 5px 14px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.btn-sm:hover {
+  background: #2b1f12;
+  color: #f4ecd8;
+}
+
+/* ---- Inline delete confirmation (P13 #6) ---- */
+.note-confirm {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  background: #f4ecd8;
+  border-left: 3px solid #722f37;
+  padding: 10px 14px;
+  margin-bottom: 8px;
+}
+
+.note-confirm-text {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: 16px;
+  color: #2b1f12;
+}
+
+.note-confirm-actions {
+  display: flex;
+  gap: 10px;
+  margin-left: auto;
+}
+
+/* destructive variant of the small button */
+.btn-sm.btn-danger {
+  border-color: #722f37;
+  color: #722f37;
+  background: #faf4dd;
+}
+
+.btn-sm.btn-danger:hover {
+  background: #722f37;
+  color: #faf4dd;
+}
