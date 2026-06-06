@@ -902,6 +902,51 @@ hr {
   font-size: 26px;
 }
 
+/* invite section: invite code (left) + member list (right) */
+.invite-grid {
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
+}
+
+.invite-col {
+  flex: 1 1 auto;
+}
+
+.member-col {
+  flex: 1 1 0;
+}
+
+.member-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 18px;
+  color: #2a2a2a;
+}
+
+.member-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #e0d8c4;
+}
+
+.member-badge {
+  font-family: 'IM Fell English SC', Georgia, serif;
+  font-size: 0.6em;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border: 1px solid #8a7a5c;
+  border-radius: 3px;
+  padding: 1px 6px;
+  margin-left: 4px;
+  color: #5a4a35;
+  vertical-align: middle;
+}
+
 /* ---- Responsive ---- */
 @media (max-width: 860px) {
   .poem-layout {
@@ -913,5 +958,13 @@ hr {
   }
   .poem-body {
     font-size: 18px;
+  }
+  .invite-grid {
+    flex-direction: column;
+    gap: 20px;
+  }
+  .member-col {
+    flex: 1 1 auto;
+    width: 100%;
   }
 }
