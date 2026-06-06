@@ -91,15 +91,27 @@
     setBody(html);
   }
 
-    // Position the popup just below the clicked word.
+  // Position the popup near the clicked word — below it by default,
+  // but above it when there isn't enough room below.
   function positionPopup(anchorEl) {
     if (!anchorEl) return;
     const rect = anchorEl.getBoundingClientRect();
-    const top = rect.bottom + window.scrollY + 6;
-    let left = rect.left + window.scrollX;
-
-    // Keep it within the viewport horizontally.
+    const gap = 6;
+    const popupHeight = popup.offsetHeight || 240;
     const popupWidth = popup.offsetWidth || 380;
+    const viewportH = document.documentElement.clientHeight;
+
+    // Vertical: flip above the word if it would overflow the bottom.
+    const spaceBelow = viewportH - rect.bottom;
+    let top;
+    if (spaceBelow < popupHeight + gap && rect.top > popupHeight + gap) {
+      top = rect.top + window.scrollY - popupHeight - gap;   // above
+    } else {
+      top = rect.bottom + window.scrollY + gap;              // below
+    }
+
+    // Horizontal: keep it within the viewport.
+    let left = rect.left + window.scrollX;
     const maxLeft = window.scrollX + document.documentElement.clientWidth - popupWidth - 12;
     if (left > maxLeft) left = maxLeft;
     if (left < window.scrollX + 12) left = window.scrollX + 12;
@@ -140,6 +152,7 @@
 
     const data = await res.json();
     renderEntry(data);
+    positionPopup(anchorEl);   // re-position now that the popup has its full height
   }
 
   // Expose globally so room.js / P13 can trigger a lookup directly if needed.
