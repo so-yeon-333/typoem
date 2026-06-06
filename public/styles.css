@@ -979,3 +979,91 @@ hr {
     max-width: none;
   }
 }
+
+/* ---- Dictionary popup (P12) ---- */
+.dict-popup {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 320px;
+  max-width: calc(100vw - 32px);
+  max-height: 60vh;
+  overflow-y: auto;
+  background: #faf4dd;
+  border: 1px solid #2b1f12;
+  box-shadow: 4px 4px 0 rgba(43, 31, 18, 0.25);
+  padding: 16px 18px;
+  z-index: 1000;
+}
+
+.dict-popup-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid #c9bd9a;
+  padding-bottom: 8px;
+  margin-bottom: 10px;
+}
+
+.dict-popup-word {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 22px;
+  color: #2b1f12;
+  margin: 0;
+  text-transform: lowercase;
+}
+
+.dict-popup-close {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.dict-phonetic {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: 17px;
+  color: #5a4a35;
+  margin: 0 0 10px;
+}
+
+.dict-def-list {
+  margin: 0;
+  padding-left: 20px;
+  font-family: 'Gentium Book Plus', Georgia, serif;
+  font-size: 15px;
+  color: #2b1f12;
+}
+
+.dict-def-list li {
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.dict-pos {
+  font-style: italic;
+  color: #5a4a35;
+}
+
+.dict-example {
+  color: #5a4a35;
+  font-style: italic;
+}
+
+.dict-loading,
+.dict-error,
+.dict-empty {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  color: #5a4a35;
+  margin: 4px 0;
+}
+
+@media (max-width: 600px) {
+  .dict-popup {
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+    width: auto;
+  }
+}
