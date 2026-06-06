@@ -76,4 +76,14 @@
 
   // Expose globally so room.js / P13 can trigger a lookup directly if needed.
   window.openDictionary = openDictionary;
+
+  // ---- Event delegation: one listener catches clicks on any .word span ----
+  // Works even though the poem is rendered after this script runs.
+  document.addEventListener('click', (e) => {
+    const wordEl = e.target.closest('.word');
+    if (!wordEl) return;
+    e.preventDefault();
+    const word = wordEl.dataset.word || wordEl.textContent;
+    openDictionary(word);
+  });
 })();
