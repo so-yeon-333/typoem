@@ -999,8 +999,6 @@ hr {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  border-bottom: 1px solid #e0d8c4;
-  padding-bottom: 6px;
   margin-bottom: 8px;
 }
 
@@ -1010,11 +1008,15 @@ hr {
   color: #2b1f12;
   margin: 0;
   text-transform: lowercase;
+  border-bottom: none;
+  padding-bottom: 0;
 }
 
 .dict-popup-close {
   font-size: 22px;
   line-height: 1;
+  border-bottom: none;
+  text-decoration: none;
 }
 
 .dict-phonetic {
