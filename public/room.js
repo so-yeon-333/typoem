@@ -524,67 +524,15 @@ async function submitAnnotation() {
 }
 
 function editAnnotation(id) {
-  const card = document.querySelector(`.note-card[data-anno-id="${id}"]`);
-  if (!card) return;
-  const contentEl = card.querySelector('.note-content');
-  if (!contentEl || card.querySelector('.note-edit')) return;  // already editing
-
-  const current = contentEl.textContent;
-
-  const editor = document.createElement('div');
-  editor.className = 'note-edit';
-  editor.innerHTML = `
-    <textarea class="note-edit-input" maxlength="1000" rows="3"></textarea>
-    <p class="note-edit-error"></p>
-    <div class="note-edit-actions">
-      <button type="button" class="btn-sm note-edit-save">Save</button>
-      <button type="button" class="btn-sm note-edit-cancel">Cancel</button>
-    </div>
-  `;
-  const textarea = editor.querySelector('.note-edit-input');
-  const errEl = editor.querySelector('.note-edit-error');
-  textarea.value = current;
-
-  contentEl.hidden = true;
-  contentEl.insertAdjacentElement('afterend', editor);
-  textarea.focus();
-
-  function cancel() {
-    editor.remove();
-    contentEl.hidden = false;
-  }
-
-  editor.querySelector('.note-edit-cancel').addEventListener('click', cancel);
-
-  // Esc cancels, Cmd/Ctrl+Enter saves
-  textarea.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      e.preventDefault();
-      cancel();
-    } else if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
-      e.preventDefault();
-      editor.querySelector('.note-edit-save').click();
-    }
-  });
-
-  editor.querySelector('.note-edit-save').addEventListener('click', async () => {
-    const trimmed = textarea.value.trim();
-    if (trimmed.length < 1 || trimmed.length > 1000) {
-      errEl.textContent = 'Note must be 1\u20131000 characters.';
-      return;
-    }
-    const res = await authFetch(`/api/annotations/${id}`, {
-      method: 'PATCH',
-      body: JSON.stringify({ content: trimmed }),
-    });
-    if (!res.ok) {
-      const data = await res.json();
-      errEl.textContent = data.error || 'Could not update note.';
-      return;
-    }
-    await reloadAnnotations(currentLineId);
+  startInlineEdit({
+    id,
+    selector: 'data-anno-id',
+    apiPath: '/api/annotations',
+    noun: 'note',
+    reload: () => reloadAnnotations(currentLineId),
   });
 }
+
 
 function deleteAnnotation(id) {
   const card = document.querySelector(`.note-card[data-anno-id="${id}"]`);
