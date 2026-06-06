@@ -649,7 +649,8 @@ hr {
   transition: border-color 0.15s, color 0.15s;
 }
 
-.word:hover {
+.word:hover,
+.word.active {
   color: #722f37;
   border-bottom-color: #722f37;
 }

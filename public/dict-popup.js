@@ -10,6 +10,7 @@
   // ---- Build the popup shell once and reuse it ----
   let popup = null;
   let popupBody = null;
+  let activeWordEl = null;
 
   function ensurePopup() {
     if (popup) return;
@@ -57,6 +58,10 @@
 
   function closeDictionary() {
     if (popup) popup.hidden = true;
+    if (activeWordEl) {
+      activeWordEl.classList.remove('active');
+      activeWordEl = null;
+    }
   }
 
   function setBody(html) {
@@ -127,6 +132,12 @@
     if (!word) return;
 
     ensurePopup();
+
+    // Mark the clicked word as active (same styling as :hover)
+    if (activeWordEl) activeWordEl.classList.remove('active');
+    activeWordEl = anchorEl || null;
+    if (activeWordEl) activeWordEl.classList.add('active');
+    
     document.getElementById('dict-popup-word').textContent = word;
     setBody('<p class="dict-loading">Looking up&hellip;</p>');
     popup.hidden = false;
