@@ -301,27 +301,58 @@ async function submitMemo() {
   await reloadMemos();
 }
 
-async function editMemo(id) {
-  const card = document.querySelector(`.note-card[data-memo-id="${id}"] .note-content`);
-  const current = card ? card.textContent : '';
-  const next = window.prompt('Edit your memo:', current);
-  if (next === null) return;                 // cancelled
-  const trimmed = next.trim();
-  if (trimmed.length < 1 || trimmed.length > 1000) {
-    window.alert('Memo must be 1\u20131000 characters.');
-    return;
+function editMemo(id) {
+  const card = document.querySelector(`.note-card[data-memo-id="${id}"]`);
+  if (!card) return;
+  const contentEl = card.querySelector('.note-content');
+  if (!contentEl || card.querySelector('.note-edit')) return;  // already editing
+
+  const current = contentEl.textContent;
+
+  // Build the inline editor
+  const editor = document.createElement('div');
+  editor.className = 'note-edit';
+  editor.innerHTML = `
+    <textarea class="note-edit-input" maxlength="1000" rows="3"></textarea>
+    <p class="note-edit-error"></p>
+    <div class="note-edit-actions">
+      <button type="button" class="btn-sm note-edit-save">Save</button>
+      <button type="button" class="btn-sm note-edit-cancel">Cancel</button>
+    </div>
+  `;
+  const textarea = editor.querySelector('.note-edit-input');
+  const errEl = editor.querySelector('.note-edit-error');
+  textarea.value = current;
+
+  // Swap the content paragraph for the editor
+  contentEl.hidden = true;
+  contentEl.insertAdjacentElement('afterend', editor);
+  textarea.focus();
+
+  function cancel() {
+    editor.remove();
+    contentEl.hidden = false;
   }
 
-  const res = await authFetch(`/api/memos/${id}`, {
-    method: 'PATCH',
-    body: JSON.stringify({ content: trimmed }),
+  editor.querySelector('.note-edit-cancel').addEventListener('click', cancel);
+
+  editor.querySelector('.note-edit-save').addEventListener('click', async () => {
+    const trimmed = textarea.value.trim();
+    if (trimmed.length < 1 || trimmed.length > 1000) {
+      errEl.textContent = 'Memo must be 1\u20131000 characters.';
+      return;
+    }
+    const res = await authFetch(`/api/memos/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ content: trimmed }),
+    });
+    if (!res.ok) {
+      const data = await res.json();
+      errEl.textContent = data.error || 'Could not update memo.';
+      return;
+    }
+    await reloadMemos();   // re-renders the card, removing the editor
   });
-  if (!res.ok) {
-    const data = await res.json();
-    window.alert(data.error || 'Could not update memo.');
-    return;
-  }
-  await reloadMemos();
 }
 
 async function deleteMemo(id) {
