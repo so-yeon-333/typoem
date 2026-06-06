@@ -649,7 +649,8 @@ hr {
   transition: border-color 0.15s, color 0.15s;
 }
 
-.word:hover {
+.word:hover,
+.word.active {
   color: #722f37;
   border-bottom-color: #722f37;
 }
@@ -977,5 +978,91 @@ hr {
   }
   .invite-share .invite-code-row {
     max-width: none;
+  }
+}
+
+/* ---- Dictionary popup (P12) ---- */
+.dict-popup {
+  position: absolute;
+  width: 380px;
+  max-width: calc(100vw - 32px);
+  max-height: 40vh;
+  overflow-y: auto;
+  background: #faf4dd;
+  border: 1px solid #2b1f12;
+  box-shadow: 4px 4px 0 rgba(43, 31, 18, 0.25);
+  padding: 14px 18px;
+  z-index: 1000;
+}
+
+.dict-popup-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.dict-popup-word {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 19px;
+  color: #2b1f12;
+  margin: 0;
+  text-transform: lowercase;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.dict-popup-close {
+  font-size: 22px;
+  line-height: 1;
+  border-bottom: none;
+  text-decoration: none;
+}
+
+.dict-phonetic {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: 15px;
+  color: #5a4a35;
+  margin: 0 0 8px;
+}
+
+.dict-def-list {
+  margin: 0;
+  padding-left: 18px;
+  font-family: 'Gentium Book Plus', Georgia, serif;
+  font-size: 13.5px;
+  color: #2b1f12;
+}
+
+.dict-def-list li {
+  margin-bottom: 8px;
+  line-height: 1.45;
+}
+
+.dict-pos {
+  font-style: italic;
+  color: #722f37;
+  margin-right: 2px;
+}
+
+.dict-example {
+  color: #5a4a35;
+  font-style: italic;
+}
+
+.dict-loading,
+.dict-error,
+.dict-empty {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  color: #5a4a35;
+  margin: 4px 0;
+}
+
+@media (max-width: 600px) {
+  .dict-popup {
+    max-width: calc(100vw - 32px);
   }
 }
