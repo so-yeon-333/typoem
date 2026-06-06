@@ -419,43 +419,14 @@ function editMemo(id) {
 }
 
 function deleteMemo(id) {
-  const card = document.querySelector(`.note-card[data-memo-id="${id}"]`);
-  if (!card) return;
-  const contentEl = card.querySelector('.note-content');
-  if (!contentEl || card.querySelector('.note-confirm')) return;  // already confirming
-
-  // Build the inline confirmation
-  const box = document.createElement('div');
-  box.className = 'note-confirm';
-  box.innerHTML = `
-    <span class="note-confirm-text">Delete this memo?</span>
-    <span class="note-confirm-actions">
-      <button type="button" class="btn-sm btn-danger note-confirm-yes">Delete</button>
-      <button type="button" class="btn-sm note-confirm-no">Cancel</button>
-    </span>
-  `;
-  contentEl.hidden = true;
-  contentEl.insertAdjacentElement('afterend', box);
-
-  function cancel() {
-    box.remove();
-    contentEl.hidden = false;
-  }
-
-  box.querySelector('.note-confirm-no').addEventListener('click', cancel);
-
-  box.querySelector('.note-confirm-yes').addEventListener('click', async () => {
-    const res = await authFetch(`/api/memos/${id}`, { method: 'DELETE' });
-    if (!res.ok && res.status !== 204) {
-      const data = await res.json();
-      box.querySelector('.note-confirm-text').textContent =
-        data.error || 'Could not delete memo.';
-      return;
-    }
-    await reloadMemos();   // re-renders the list, removing this card
+  startInlineDelete({
+    id,
+    selector: 'data-memo-id',
+    apiPath: '/api/memos',
+    noun: 'memo',
+    reload: reloadMemos,
   });
 }
-
 // Refresh just the memo list (after create/edit/delete).
 async function reloadMemos() {
   const res = await authFetch(`/api/rooms/${ROOM_ID}/memos`);
