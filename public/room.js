@@ -77,6 +77,7 @@ async function loadToday() {
   renderPoem(data.poem);
   renderMemos(data.memos || []);
   loadInviteCode();
+  loadMembers();
 }
 
 // The invite code isn't in the /today payload, but /api/rooms/mine returns it
@@ -98,6 +99,23 @@ async function loadInviteCode() {
   document.getElementById('invite-code').textContent = room.invite_code;
   document.getElementById('invite-share').hidden = false;
   wireCopyButton(room.invite_code);
+}
+
+// Member list — GET /api/rooms/:id/members returns members in join order
+// (id, username, nickname, role). Backend already exists (P3); just render.
+async function loadMembers() {
+  const res = await authFetch(`/api/rooms/${ROOM_ID}/members`);
+  if (!res.ok) return;
+  const members = await res.json();
+
+  const ul = document.getElementById('member-list');
+  ul.innerHTML = members.map((m) => {
+    const name = escapeHtml(m.nickname || m.username || '');
+    const owner = m.role === 'owner'
+      ? ' <span class="member-badge">owner</span>'
+      : '';
+    return `<li class="member-item">${name}${owner}</li>`;
+  }).join('');
 }
 
 // Copy the invite code to the clipboard (same fallback pattern as create-room.js).
