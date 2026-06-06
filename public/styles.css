@@ -985,14 +985,14 @@ hr {
   position: fixed;
   bottom: 24px;
   right: 24px;
-  width: 260px;
+  width: 380px;
   max-width: calc(100vw - 32px);
-  max-height: 50vh;
+  max-height: 40vh;
   overflow-y: auto;
   background: #faf4dd;
   border: 1px solid #2b1f12;
   box-shadow: 4px 4px 0 rgba(43, 31, 18, 0.25);
-  padding: 12px 14px;
+  padding: 14px 18px;
   z-index: 1000;
 }
 
