@@ -336,6 +336,17 @@ function editMemo(id) {
 
   editor.querySelector('.note-edit-cancel').addEventListener('click', cancel);
 
+  // Esc cancels, Cmd/Ctrl+Enter saves
+  textarea.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      cancel();
+    } else if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+      e.preventDefault();
+      editor.querySelector('.note-edit-save').click();
+    }
+  });
+
   editor.querySelector('.note-edit-save').addEventListener('click', async () => {
     const trimmed = textarea.value.trim();
     if (trimmed.length < 1 || trimmed.length > 1000) {
