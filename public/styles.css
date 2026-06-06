@@ -982,9 +982,7 @@ hr {
 
 /* ---- Dictionary popup (P12) ---- */
 .dict-popup {
-  position: fixed;
-  bottom: 24px;
-  right: 24px;
+  position: absolute;
   width: 380px;
   max-width: calc(100vw - 32px);
   max-height: 40vh;

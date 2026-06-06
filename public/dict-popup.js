@@ -91,15 +91,34 @@
     setBody(html);
   }
 
+    // Position the popup just below the clicked word.
+  function positionPopup(anchorEl) {
+    if (!anchorEl) return;
+    const rect = anchorEl.getBoundingClientRect();
+    const top = rect.bottom + window.scrollY + 6;
+    let left = rect.left + window.scrollX;
+
+    // Keep it within the viewport horizontally.
+    const popupWidth = popup.offsetWidth || 380;
+    const maxLeft = window.scrollX + document.documentElement.clientWidth - popupWidth - 12;
+    if (left > maxLeft) left = maxLeft;
+    if (left < window.scrollX + 12) left = window.scrollX + 12;
+
+    popup.style.top = `${top}px`;
+    popup.style.left = `${left}px`;
+  }
+
+
   // ---- Public: look a word up and show the popup ----
-  async function openDictionary(rawWord) {
+  async function openDictionary(rawWord, anchorEl) {
     const word = String(rawWord || '').toLowerCase().trim();
     if (!word) return;
 
-ensurePopup();
+    ensurePopup();
     document.getElementById('dict-popup-word').textContent = word;
     setBody('<p class="dict-loading">Looking up&hellip;</p>');
     popup.hidden = false;
+    positionPopup(anchorEl);
 
     let res;
     try {
@@ -133,6 +152,6 @@ ensurePopup();
     if (!wordEl) return;
     e.preventDefault();
     const word = wordEl.dataset.word || wordEl.textContent;
-    openDictionary(word);
+    openDictionary(word, wordEl);
   });
 })();
