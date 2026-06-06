@@ -63,8 +63,36 @@
     popupBody.innerHTML = html;
   }
 
-  // ---- Public: open the popup for a word (lookup added in a later commit) ----
-  function openDictionary(rawWord) {
+// ---- Render the slim API payload { word, phonetic, definitions[] } ----
+  function renderEntry(data) {
+    document.getElementById('dict-popup-word').textContent = data.word || '';
+
+    let html = '';
+    if (data.phonetic) {
+      html += `<p class="dict-phonetic">${escapeHtml(data.phonetic)}</p>`;
+    }
+
+    const defs = Array.isArray(data.definitions) ? data.definitions : [];
+    if (defs.length === 0) {
+      html += `<p class="dict-empty">No definition available.</p>`;
+    } else {
+      html += '<ol class="dict-def-list">';
+      for (const d of defs) {
+        const pos = d.partOfSpeech
+          ? `<span class="dict-pos">${escapeHtml(d.partOfSpeech)}</span> `
+          : '';
+        const ex = d.example
+          ? `<span class="dict-example">&ldquo;${escapeHtml(d.example)}&rdquo;</span>`
+          : '';
+        html += `<li>${pos}${escapeHtml(d.definition)}${ex ? '<br>' + ex : ''}</li>`;
+      }
+      html += '</ol>';
+    }
+    setBody(html);
+  }
+
+  // ---- Public: look a word up and show the popup ----
+  async function openDictionary(rawWord) {
     const word = String(rawWord || '').toLowerCase().trim();
     if (!word) return;
 
@@ -72,6 +100,10 @@
     document.getElementById('dict-popup-word').textContent = word;
     setBody('');
     popup.hidden = false;
+
+    const res = await authFetch(`/api/dictionary/${encodeURIComponent(word)}`);
+    const data = await res.json();
+    renderEntry(data);
   }
 
   // Expose globally so room.js / P13 can trigger a lookup directly if needed.
