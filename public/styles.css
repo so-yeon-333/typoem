@@ -893,14 +893,62 @@ hr {
   margin-bottom: 4px;
 }
 
-/* keep the code + button compact instead of stretching the full width */
-.invite-share .invite-code-row {
-  max-width: 420px;
-}
-
 .invite-share .invite-code {
   letter-spacing: 6px;
   font-size: 26px;
+}
+
+/* invite section: invite code (left) + member list (right) */
+.invite-grid {
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
+}
+
+.invite-col {
+  flex: 1 1 auto;
+}
+
+.member-col {
+  flex: 1 1 0;
+}
+
+/* tighten the gap between the MEMBERS heading and the list */
+.member-col .panel-heading {
+  margin-bottom: 4px;
+}
+
+.member-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 21px;
+  color: #2a2a2a;
+}
+
+.member-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 0;
+  border-bottom: 1px solid #e0d8c4;
+}
+
+.member-item:last-child {
+  border-bottom: none;
+}
+
+.member-badge {
+  font-family: 'IM Fell English SC', Georgia, serif;
+  font-size: 0.62em;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border: 1px solid #8a7a5c;
+  border-radius: 3px;
+  padding: 2px 7px;
+  color: #5a4a35;
+  vertical-align: middle;
 }
 
 /* ---- Responsive ---- */
@@ -914,5 +962,20 @@ hr {
   }
   .poem-body {
     font-size: 18px;
+  }
+}
+
+/* invite/member: 2-column normally, stack only on mobile widths */
+@media (max-width: 600px) {
+  .invite-grid {
+    flex-direction: column;
+    gap: 20px;
+  }
+  .member-col {
+    flex: 1 1 auto;
+    width: 100%;
+  }
+  .invite-share .invite-code-row {
+    max-width: none;
   }
 }
