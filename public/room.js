@@ -563,18 +563,42 @@ function editAnnotation(id) {
   });
 }
 
-async function deleteAnnotation(id) {
-  if (!window.confirm('Delete this note?')) return;
+function deleteAnnotation(id) {
+  const card = document.querySelector(`.note-card[data-anno-id="${id}"]`);
+  if (!card) return;
+  const contentEl = card.querySelector('.note-content');
+  if (!contentEl || card.querySelector('.note-confirm')) return;  // already confirming
 
-  const res = await authFetch(`/api/annotations/${id}`, { method: 'DELETE' });
-  if (!res.ok && res.status !== 204) {
-    const data = await res.json();
-    window.alert(data.error || 'Could not delete note.');
-    return;
+  const box = document.createElement('div');
+  box.className = 'note-confirm';
+  box.innerHTML = `
+    <span class="note-confirm-text">Delete this note?</span>
+    <span class="note-confirm-actions">
+      <button type="button" class="btn-sm btn-danger note-confirm-yes">Delete</button>
+      <button type="button" class="btn-sm note-confirm-no">Cancel</button>
+    </span>
+  `;
+  contentEl.hidden = true;
+  contentEl.insertAdjacentElement('afterend', box);
+
+  function cancel() {
+    box.remove();
+    contentEl.hidden = false;
   }
-  await reloadAnnotations(currentLineId);
-}
 
+  box.querySelector('.note-confirm-no').addEventListener('click', cancel);
+
+  box.querySelector('.note-confirm-yes').addEventListener('click', async () => {
+    const res = await authFetch(`/api/annotations/${id}`, { method: 'DELETE' });
+    if (!res.ok && res.status !== 204) {
+      const data = await res.json();
+      box.querySelector('.note-confirm-text').textContent =
+        data.error || 'Could not delete note.';
+      return;
+    }
+    await reloadAnnotations(currentLineId);
+  });
+}
 // Refresh one line's annotations from the server, update state + drawer + badge.
 async function reloadAnnotations(lineId) {
   if (lineId == null) return;
