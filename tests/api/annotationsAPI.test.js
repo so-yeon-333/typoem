@@ -9,8 +9,10 @@ const app = require("../../app");
 //   - roomsModel: borrowed for permission checks (findById + isMember)
 jest.mock("../../models/annotationsModel");
 jest.mock("../../models/roomsModel");
+jest.mock("../../models/usersModel");
 const annotationsModel = require("../../models/annotationsModel");
 const roomsModel = require("../../models/roomsModel");
+const usersModel = require("../../models/usersModel");
 
 // Sign a valid token once. JWT_SECRET is set by tests/setup.js before this
 // file loads. Payload { id, username } matches the auth middleware (req.user.id).
@@ -29,6 +31,7 @@ const BASE = "/api/rooms/5/lines/9/annotations";
 // Reset mock state between tests so calls/return values don't leak.
 beforeEach(() => {
   jest.clearAllMocks();
+  usersModel.findById.mockResolvedValue({ id: 1, username: "alice", nickname: "Alice" });
 });
 
 // -----------------------------------------------------------------------------
