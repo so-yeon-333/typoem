@@ -96,12 +96,29 @@
     const word = String(rawWord || '').toLowerCase().trim();
     if (!word) return;
 
-    ensurePopup();
+ensurePopup();
     document.getElementById('dict-popup-word').textContent = word;
-    setBody('');
+    setBody('<p class="dict-loading">Looking up&hellip;</p>');
     popup.hidden = false;
 
-    const res = await authFetch(`/api/dictionary/${encodeURIComponent(word)}`);
+    let res;
+    try {
+      res = await authFetch(`/api/dictionary/${encodeURIComponent(word)}`);
+    } catch (err) {
+      setBody('<p class="dict-error">Could not reach the dictionary. Try again.</p>');
+      return;
+    }
+
+    // authFetch handles 401 (logout + redirect); handle the rest here.
+    if (res.status === 404) {
+      setBody('<p class="dict-error">No entry found for this word.</p>');
+      return;
+    }
+    if (!res.ok) {
+      setBody('<p class="dict-error">The dictionary is unavailable right now.</p>');
+      return;
+    }
+
     const data = await res.json();
     renderEntry(data);
   }
