@@ -634,7 +634,8 @@ hr {
 
 .line-text {
   flex: 1 1 auto;
-  padding: 4px 0;
+  padding-left: 1em;
+  text-indent: -1em;
 }
 
 .poem-line-blank {
