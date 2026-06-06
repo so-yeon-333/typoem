@@ -1122,3 +1122,40 @@ hr {
   background: #2b1f12;
   color: #f4ecd8;
 }
+
+/* ---- Inline delete confirmation (P13 #6) ---- */
+.note-confirm {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  background: #f4ecd8;
+  border-left: 3px solid #722f37;
+  padding: 10px 14px;
+  margin-bottom: 8px;
+}
+
+.note-confirm-text {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: 16px;
+  color: #2b1f12;
+}
+
+.note-confirm-actions {
+  display: flex;
+  gap: 10px;
+  margin-left: auto;
+}
+
+/* destructive variant of the small button */
+.btn-sm.btn-danger {
+  border-color: #722f37;
+  color: #722f37;
+  background: #faf4dd;
+}
+
+.btn-sm.btn-danger:hover {
+  background: #722f37;
+  color: #faf4dd;
+}
