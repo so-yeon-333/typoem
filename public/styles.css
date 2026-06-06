@@ -1062,9 +1062,6 @@ hr {
 
 @media (max-width: 600px) {
   .dict-popup {
-    left: 16px;
-    right: 16px;
-    bottom: 16px;
-    width: auto;
+    max-width: calc(100vw - 32px);
   }
 }
