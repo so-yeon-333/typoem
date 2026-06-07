@@ -218,21 +218,57 @@ function renderLine(line) {
   `;
 }
 
-// Wrap each word in a span the dictionary popup can attach to.
-// Split on spaces; punctuation stays attached to the word (the dictionary
-// API tolerates it well enough for our needs).
+// Render a poem line into clickable .word spans for the dictionary (P12),
+// while translating PoetryDB's plain-text markup:
+//   _word_  -> <em>word</em>   (Project Gutenberg italics convention)
+//   --      -> —               (em dash)
+// Punctuation is split off the dictionary lookup so "And," looks up "and",
+// while the line still DISPLAYS the punctuation verbatim.
 function wrapWords(text) {
-  const words = text.split(' ');
-  const spans = [];
-  for (const w of words) {
-    if (w === '') {
-      spans.push('');
-    } else {
-      const lookup = escapeHtml(w.toLowerCase());
-      spans.push(`<span class="word" data-word="${lookup}">${escapeHtml(w)}</span>`);
-    }
+  let t = text.replace(/--/g, '\u2014');   // 1) em dash, before tokenising
+
+  // 2) Paired emphasis _..._ -> <em>...</em>. A lone/unmatched underscore is
+  //    left as a literal character. Inner text is word-wrapped as usual, so
+  //    the dictionary still works inside italics (<em><span class="word">…).
+  let out = '';
+  let last = 0;
+  const re = /_([^_]+)_/g;
+  let m;
+  while ((m = re.exec(t)) !== null) {
+    out += wrapInline(t.slice(last, m.index));
+    out += '<em>' + wrapInline(m[1]) + '</em>';
+    last = re.lastIndex;
   }
-  return spans.join(' ');
+  out += wrapInline(t.slice(last));
+  return out;
+}
+
+// Wrap plain (already em-dash-normalised, no underscores) text. Splits on
+// spaces AND em dashes so a word on either side of a dash stays independently
+// clickable; the dash itself is rendered but not clickable.
+function wrapInline(segment) {
+  if (segment === '') return '';
+  return segment.split(' ').map(function (spaceTok) {
+    if (spaceTok === '') return '';
+    return spaceTok.split(/(\u2014)/).map(function (p) {
+      if (p === '\u2014') return '\u2014';   // em dash: literal, not a .word
+      return wrapWordChunk(p);
+    }).join('');
+  }).join(' ');
+}
+
+// Wrap a single chunk: strip leading/trailing punctuation off the lookup word
+// (so the dictionary gets a clean term) but display the chunk verbatim.
+// A chunk with no real word (pure punctuation) is emitted as escaped text.
+function wrapWordChunk(chunk) {
+  if (chunk === '') return '';
+  const m = chunk.match(/^([^A-Za-z0-9]*)([A-Za-z0-9][A-Za-z0-9'\u2019-]*)?([^A-Za-z0-9]*)$/);
+  if (!m || !m[2]) return escapeHtml(chunk);
+  const pre = m[1], core = m[2], post = m[3];
+  const lookup = escapeHtml(core.toLowerCase());
+  return escapeHtml(pre)
+    + `<span class="word" data-word="${lookup}">${escapeHtml(core)}</span>`
+    + escapeHtml(post);
 }
 
 // =====================================================================
