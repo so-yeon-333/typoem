@@ -2,6 +2,8 @@
 
 ![CI](https://github.com/so-yeon-333/typoem/actions/workflows/test.yml/badge.svg)
 
+**Live app:** https://typoem.onrender.com &nbsp;·&nbsp; **API docs:** https://typoem.onrender.com/api/docs
+
 > *Type + Poem* — A cozy little corner where friends gather to read a daily poem and leave their ink-marks across the page.
 
 Typoem is a full-stack web application where small groups of close friends gather in private code-based rooms to read one English poem together each day. Users can leave memos on the poem as a whole, attach line-level annotations to specific lines, and look up unfamiliar words through a built-in dictionary.
@@ -56,8 +58,8 @@ This project is the team submission for **ITM519 Web Programming (Spring 2026)**
 | --- | --- |
 | Frontend | HTML + CSS + Vanilla JavaScript |
 | Backend | Node.js + Express |
-| Database | SQLite |
-| Authentication | JWT (`jsonwebtoken`) + `bcrypt` |
+| Database | SQLite (sqlite + sqlite3) |
+| Authentication | JWT + `bcrypt` |
 | API Documentation | `swagger-ui-express` + `yamljs` |
 | Testing | Jest + Supertest |
 | CI | GitHub Actions |
@@ -74,8 +76,9 @@ This project is the team submission for **ITM519 Web Programming (Spring 2026)**
 
 ```
 typoem/
-├── app.js                  # Express entry point
-├── db.js                   # Database connection
+├── server.js               # Entry point — env validation, DB init, seed, listen
+├── app.js                  # Express app — middleware, routers, Swagger, /api/health
+├── db.js                   # Database connection (initDb / getDb)
 ├── openapi.yaml            # OpenAPI 3.0 specification
 ├── package.json
 ├── package-lock.json
@@ -113,13 +116,13 @@ typoem/
 └── README.md
 ```
 
-The structure follows the MVC pattern taught in Lecture 10, with frontend pages served as static files from `public/` (Lecture 12 pattern).
+The structure follows the MVC pattern, with frontend pages served as static files from `public/`.
 
 ---
 
 ## Prerequisites
 
-- **Node.js** v20 or higher
+- **Node.js** v22.x (the project is pinned to Node 22 via `engines` in `package.json`; the CI runs on Node 22)
 - **npm** v10 or higher
 - A GitHub account (for cloning)
 
@@ -143,7 +146,7 @@ cp .env.example .env
 
 Then edit `.env` and fill in your values (see [Environment Variables](#environment-variables)).
 
-The database is seeded automatically on first startup. If you want to reset it, delete `typoem.db` and restart.
+On first startup, the database is created from `db/schema.sql` and seeded with demo data (`db/seed.js`): sample users, one room with invite code `ABC123`, and one poem ("Wild Nights - Wild Nights!" by Emily Dickinson) set as today's poem, so the room screen has content to display. (The seeded users use placeholder password hashes and are not meant for login; register a new account to log in.) Seeding is skipped if the database already contains users. To reset, delete the database file (`typoem.db`) and restart.
 
 ---
 
@@ -155,8 +158,11 @@ Create a `.env` file based on `.env.example`:
 | --- | --- | --- |
 | `PORT` | Port the server listens on | `3000` |
 | `JWT_SECRET` | Secret key for signing JWTs (use a long random string) | `your-long-random-string-here` |
+| `JWT_EXPIRES_IN` | JWT expiry passed to `jsonwebtoken` (e.g. `1h`) | `1h` |
 | `DB_PATH` | Path to the SQLite database file | `./typoem.db` |
 | `NODE_ENV` | Environment mode | `development` or `production` |
+
+> ⚠️ `JWT_SECRET` and `JWT_EXPIRES_IN` are **required**. The server validates them on startup (`server.js`) and exits immediately if either is missing.
 
 > ⚠️ **Never commit `.env` to git.** It is listed in `.gitignore`.
 
@@ -178,6 +184,18 @@ Uses Node's `--watch` mode for automatic restart on file changes. Open `http://l
 npm start
 ```
 
+A health check endpoint is available at `/api/health`, which returns `{ "status": "ok", "app": "Typoem" }`.
+
+### Refreshing the poem pool (optional)
+
+`data/poems.json` holds poems pre-fetched from PoetryDB. To re-fetch a fresh batch:
+
+```bash
+npm run fetch-poems
+```
+
+This is a one-off utility (`scripts/fetch-poems.js`) and is not required to run the app.
+
 ---
 
 ## Testing
@@ -186,6 +204,12 @@ All tests are written with Jest and Supertest.
 
 ```bash
 npm test
+```
+
+To run with a coverage report:
+
+```bash
+npm run test:coverage
 ```
 
 **What's tested:**
@@ -199,7 +223,7 @@ Tests run automatically on every push to `main` and on every pull request via Gi
 
 ## API Documentation
 
-The OpenAPI 3.0 specification is in `openapi.yaml`.
+The OpenAPI 3.0 specification is in `openapi.yaml` (repository root).
 
 When the server is running, interactive API documentation is available at:
 
@@ -207,15 +231,17 @@ When the server is running, interactive API documentation is available at:
 http://localhost:3000/api/docs
 ```
 
-The docs are generated using `swagger-ui-express` + `yamljs` (Lecture 10 approach).
+On the deployed instance: https://typoem.onrender.com/api/docs
+
+The docs are served by loading the static `openapi.yaml` file with `yamljs` and rendering it through `swagger-ui-express`.
 
 ---
 
 ## Deployment
 
-While deployment is optional per the project specification (Section 3.6), the application is deployed on **Render (free tier)** for convenient access during evaluation.
+The application is deployed on **Render (free tier)** for convenient access during evaluation.
 
-**Deployed URL**: *(to be added once deployed)*
+**Deployed URL**: https://typoem.onrender.com
 
 ### Notes on Render's free tier
 
@@ -266,7 +292,7 @@ All commit messages are written in English.
 3. Push the branch and open a Pull Request on GitHub
 4. CI must pass before merging
 5. Review from a teammate is recommended but not required
-6. Use **Merge commit** (not Squash) to preserve individual commit history on `main`
+6. Use Merge commit to preserve individual commit history on `main`
 7. Delete the feature branch after merging (GitHub does this automatically)
 
 ### Git Configuration
@@ -278,13 +304,11 @@ git config user.name "Your Name"
 git config user.email "your-github-email@example.com"
 ```
 
-This is important for individual commit history (see Section 6.1 of the project specification).
-
 ---
 
 ## Team
 
-**Team 5 — ITM519 Web Programming (Spring 2026)**
+**Team 5**
 
 | Member | Role |
 | --- | --- |
@@ -297,18 +321,35 @@ This is important for individual commit history (see Section 6.1 of the project 
 
 ## AI Use Disclosure
 
-In accordance with **Section 7 of the project specification (Academic Integrity and AI Use)**, the team discloses the use of AI assistants during this project.
-
 **Tools used:**
 
 - Claude (Anthropic)
 
-**Areas where AI was used (updated as the project progresses):**
+**How each team member used AI:**
 
-- Refining the application concept and feature prioritization during the proposal phase
-- Reviewing the data model and REST API design for consistency
-- Drafting initial README structure and team workflow documentation
-- *(additional areas to be documented as development progresses, e.g., code review suggestions, debugging assistance, test scaffolding, etc.)*
+- **박소연 (Soyeon)**
+  1. Designing the UI structure and interaction patterns of the P13 poem screen (memo/annotation drawer, gutter click target)
+  2. Comparing font metrics (digit/cap-height ratio of IM Fell English SC vs Gentium Book Plus) with help using fontTools
+  3. Debugging the Render deployment — diagnosing free-tier environment issues such as the `sqlite3` v6 GLIBC requirement conflict
+  4. Cross-checking the final README line by line against the actual code to catch mismatches (entry point, missing env vars, etc.)
+
+- **이지섭 (Jiseop)**
+  1. Help structuring and scaffolding which test cases to write
+  2. Help with areas not covered in class or unclear, such as SQLite handling
+  3. Debugging when errors occurred or behavior did not match intent
+  4. Because the team conventions and project specification are very specific, repeatedly cross-checking with AI whether his code conformed to them
+
+- **권시현 (Sihyun)**
+  1. Structuring the `sqlite` + `sqlite3` handling and the `initDb()` / `getDb()` layer
+  2. Designing the REST API structure (404/403 branching, splitting routes across two paths)
+  3. Scaffolding tests using a mock-based approach
+  4. Cross-checking his code against the project spec and team conventions (table constraints, REST response codes)
+
+- **김경윤 (Gyeongyoon)**
+  1. Building the auth pages and room pages (form handling, client-side validation, the authFetch request/response/error flow)
+  2. Designing the dictionary popup (`dict-popup.js`) — reusable popup DOM, event delegation for word clicks, position-flip calculation, close-on-Esc/outside-click — mostly not covered in class
+  3. Writing the regex that strips punctuation from PoetryDB markup (`_italic_`, em dashes) so dictionary lookups don't break
+  4. Debugging the mobile popup-position bug and word-lookup failures caused by punctuation
 
 All AI-assisted output is reviewed, understood, and modified by the responsible team member before being committed. Individual understanding will be verified during the live evaluation (Section 5.2 of the specification).
 
