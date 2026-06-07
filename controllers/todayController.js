@@ -143,4 +143,4 @@ async function getToday(req, res) {
     }
 }
 
-module.exports = { getToday };
+module.exports = { getToday, fetchRandomFromApi };
