@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Typoem · A daily poem, shared</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital@0;1&family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Gentium+Book+Plus:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="landing-page" hidden>
+
+  <main class="landing">
+    <div class="landing-headline">
+      <h1 class="auth-brand">Typoem</h1>
+      <p class="auth-subtitle">A daily poem, shared in quiet company.</p>
+    </div>
+
+    <p id="status" class="status" role="status">Loading today&rsquo;s poem&hellip;</p>
+
+    <article class="poem-sheet landing-poem" hidden>
+      <h2 class="poem-title" id="poem-title"></h2>
+      <p class="poem-author" id="poem-author"></p>
+      <div class="rule-thin"></div>
+      <div class="poem-body" id="poem-body"></div>
+    </article>
+
+    <div class="landing-cta">
+      <p class="landing-invite">Read it together with your friends.</p>
+      <a href="/register.html" class="btn">Sign up</a>
+      <p class="auth-footer">Already have an account? <a href="/login.html">Log in</a></p>
+    </div>
+  </main>
+
+  <script src="auth.js"></script>
+  <script src="landing.js"></script>
+
+</body>
+</html>

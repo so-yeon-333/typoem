@@ -16,6 +16,13 @@ const publicRouter = require('./routes/public');
 const app = express();
 app.use(express.json());
 
+app.use(express.json());
+
+// Serve the landing page at the root, before express.static auto-serves index.html.
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'landing.html'));
+});
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 // API routes
