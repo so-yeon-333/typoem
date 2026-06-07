@@ -39,6 +39,16 @@ async function isMember(room_id, user_id) {
     return !!row;
 } // return boolean
 
+async function countOwnedRooms(user_id) {
+    const row = await getDb().get(`SELECT COUNT(*) AS n FROM rooms WHERE owner_id = ?`, [user_id]);
+    return row.n;
+} // return number of rooms this user owns
+
+async function countMemberships(user_id) {
+    const row = await getDb().get(`SELECT COUNT(*) AS n FROM room_members WHERE user_id = ?`, [user_id]);
+    return row.n;
+} // return number of rooms this user belongs to (owned rooms included)
+
 
 async function listRoomsForUser(user_id) { // rooms user belong to
     return await getDb().all(
@@ -132,4 +142,4 @@ async function deleteRoom(room_id) {
     }
 }
 
-module.exports = { findById, findByInviteCode, isMember, listRoomsForUser, listMembers, createRoom, addMember, removeMember, deleteRoom, InviteCodeGenerationError, AlreadyMemberError };
+module.exports = { findById, findByInviteCode, isMember, listRoomsForUser, listMembers, createRoom, addMember, removeMember, deleteRoom, countOwnedRooms, countMemberships, InviteCodeGenerationError, AlreadyMemberError };
