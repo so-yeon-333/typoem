@@ -855,6 +855,16 @@ hr {
   margin: 0 0 20px;
 }
 
+/* On phones the drawer fills the screen instead of leaving a dead strip
+   beside the 90vw cap, and tightens its padding for more content width. */
+@media (max-width: 600px) {
+  .drawer {
+    width: 100%;
+    max-width: 100%;
+    padding: 22px 20px 32px;
+  }
+}
+
 /* lines that already have notes keep a wine-red gutter bar */
 .line-gutter.has-notes .gutter-bar {
   background-color: #722f37;
