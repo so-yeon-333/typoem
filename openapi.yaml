@@ -24,6 +24,8 @@ tags:
     description: Line-level annotations on a room's poem of the day
   - name: Poems
     description: The room's poem of the day with its memos and line annotations
+  - name: Public
+    description: Unauthenticated endpoints for the landing page
 
 components:
   securitySchemes:
@@ -198,6 +200,30 @@ components:
           description: Empty string for blank lines (stanza breaks).
           example: "When I was One,"
 
+    PublicPoem:
+      type: object
+      description: >
+        A poem in its raw form (lines as plain strings), as returned by the
+        public landing endpoint. Unlike Poem, the lines are NOT persisted, so
+        they carry no ids - the public taster has no memos or annotations.
+      properties:
+        title:
+          type: string
+          example: "Fragment"
+        author:
+          type: string
+          example: "Percy Bysshe Shelley"
+        lines:
+          type: array
+          items:
+            type: string
+          example:
+            - "Wealth, and dominion, fade into the mass"
+            - "Of the great sea of human right and wrong,"
+            - "When once from our possession they must pass;"
+            - "But love, though misdirected, is among"
+            - "The things which are immortal, and surpass"
+
     Poem:
       type: object
       properties:
@@ -276,6 +302,39 @@ components:
             $ref: '#/components/schemas/LineAnnotation'
 
 paths:
+  /api/public/poem:
+    get:
+      tags: [Public]
+      summary: Get a single short poem for the landing page
+      description: >
+        Returns one short poem (4-12 lines) for the public, logged-out landing
+        page so visitors can preview Typoem before signing up. No authentication
+        required. A fresh poem is fetched live from PoetryDB (falling back to a
+        local pool); this endpoint never reads or writes the database and assigns
+        nothing to any room.
+      responses:
+        '200':
+          description: A short poem
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  poem:
+                    $ref: '#/components/schemas/PublicPoem'
+        '503':
+          description: No poem available right now; client should retry
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                
   /api/auth/register:
     post:
       tags: [Auth]
