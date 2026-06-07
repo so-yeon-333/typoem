@@ -23,6 +23,8 @@ const token = jwt.sign(
 beforeEach(() => {
   jest.clearAllMocks();
   usersModel.findById.mockResolvedValue({ id: 1, username: "alice", nickname: "Alice" });
+  roomsModel.countOwnedRooms.mockResolvedValue(0);
+  roomsModel.countMemberships.mockResolvedValue(0);
 });
 
 // -----------------------------------------------------------------------------
@@ -77,6 +79,38 @@ describe("POST /api/rooms", () => {
       owner_id: 1,
     });
   });
+
+  test("returns 403 when the user already owns the max number of rooms", async () => {
+    // Arrange: user is at the owner limit
+    roomsModel.countOwnedRooms.mockResolvedValue(3);
+
+    // Act
+    const res = await request(app)
+      .post("/api/rooms")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ name: "My Room" });
+
+    // Assert
+    expect(res.statusCode).toBe(403);
+    expect(roomsModel.createRoom).not.toHaveBeenCalled();
+  });
+
+  test("returns 403 when the user is already in the max number of rooms", async () => {
+    // Arrange: owner limit ok, but membership limit reached
+    roomsModel.countOwnedRooms.mockResolvedValue(1);
+    roomsModel.countMemberships.mockResolvedValue(5);
+
+    // Act
+    const res = await request(app)
+      .post("/api/rooms")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ name: "My Room" });
+
+    // Assert
+    expect(res.statusCode).toBe(403);
+    expect(roomsModel.createRoom).not.toHaveBeenCalled();
+  });
+
 });
 
 // -----------------------------------------------------------------------------
@@ -155,6 +189,25 @@ describe("POST /api/rooms/join", () => {
     // Assert
     expect(res.statusCode).toBe(409);
   });
+
+  test("returns 403 when the user is already in the max number of rooms", async () => {
+    // Arrange: room exists, but user is at the membership limit
+    roomsModel.findByInviteCode.mockResolvedValue({
+      id: 7, name: "Full", description: null, invite_code: "ABC123", owner_id: 2,
+    });
+    roomsModel.countMemberships.mockResolvedValue(5);
+
+    // Act
+    const res = await request(app)
+      .post("/api/rooms/join")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ invite_code: "ABC123" });
+
+    // Assert
+    expect(res.statusCode).toBe(403);
+    expect(roomsModel.addMember).not.toHaveBeenCalled();
+  });
+
 });
 
 // -----------------------------------------------------------------------------

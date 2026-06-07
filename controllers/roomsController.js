@@ -1,5 +1,9 @@
 const model = require("../models/roomsModel");
 
+// per-user room limits (fixed server policy)
+const MAX_OWNED_ROOMS = 3;
+const MAX_JOINED_ROOMS = 5;
+
 // helper: parse ':id' path param and validate
 function parseId(raw) {
     const id = Number(raw);
@@ -19,6 +23,13 @@ async function createRoom(req, res) {
         if (description !== undefined && description !== null) {
             if (typeof description !== "string" || description.length > 200) return res.status(400).json({ error: "description must be 0-200 characters" });
         }
+
+        // enforce per-user room limits
+        const owned = await model.countOwnedRooms(req.user.id);
+        if (owned >= MAX_OWNED_ROOMS) return res.status(403).json({ error: `You can own at most ${MAX_OWNED_ROOMS} rooms` });
+
+        const joined = await model.countMemberships(req.user.id);
+        if (joined >= MAX_JOINED_ROOMS) return res.status(403).json({ error: `You can be in at most ${MAX_JOINED_ROOMS} rooms` });
 
         const room = await model.createRoom({
             name,
@@ -56,6 +67,11 @@ async function joinRoom(req, res) {
         if (typeof invite_code !== "string") return res.status(400).json({ error: "invite_code must be a string" });
 
         const room = await model.findByInviteCode(invite_code);
+
+        // enforce membership limit (owned rooms count toward this)
+        const joined = await model.countMemberships(req.user.id);
+        if (joined >= MAX_JOINED_ROOMS) return res.status(403).json({ error: `You can be in at most ${MAX_JOINED_ROOMS} rooms` });
+
         if (!room) return res.status(404).json({ error: "Room not found" });
 
         await model.addMember({ room_id: room.id, user_id: req.user.id, role: "member" });
