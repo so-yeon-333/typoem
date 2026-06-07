@@ -1174,3 +1174,27 @@ hr {
   background: #722f37;
   color: #faf4dd;
 }
+/* ---- Room actions (leave / delete) — below the invite + member grid ---- */
+.room-actions {
+  margin-top: 28px;
+}
+
+.room-actions-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+
+.room-actions-hint {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: 15px;
+  color: #6b5d4a;
+}
+
+@media (max-width: 640px) {
+  .room-actions-row .btn-sm { width: 100%; }
+  .room-actions-hint { margin-left: 0; }
+}

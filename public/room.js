@@ -41,6 +41,7 @@ function hasContent(text) {
 // Annotations are grouped by line_id so the drawer can show one line's notes.
 let annotationsByLine = {};   // { line_id: [annotation, ...] }
 let currentLineId = null;     // line whose drawer is open, or null
+let isOwner = false;          // is the current user this room's owner?
 
 // =====================================================================
 //  Initial load
@@ -99,6 +100,82 @@ async function loadInviteCode() {
   document.getElementById('invite-code').textContent = room.invite_code;
   document.getElementById('invite-share').hidden = false;
   wireCopyButton(room.invite_code);
+  renderRoomActions(room);
+}
+
+// Owner sees a Delete button (removes the room + all its content); a non-owner
+// member sees a Leave button. Both confirm inline before calling the backend.
+function renderRoomActions(room) {
+  if (!me) return;
+  isOwner = room.owner_id === me.id;
+
+  const wrap = document.getElementById('room-actions');
+  drawRoomActionButton();
+  wrap.hidden = false;
+}
+
+// (Re)draw the single action button for the current user's role. Split out so
+// the inline-confirm Cancel path can restore the button without re-fetching.
+function drawRoomActionButton() {
+  const row = document.getElementById('room-actions-row');
+
+  row.innerHTML = isOwner
+    ? `<button type="button" id="delete-room-btn" class="btn-sm btn-danger">Delete Room</button>
+       <span class="room-actions-hint">Deletes this room and all its memos and notes for everyone.</span>`
+    : `<button type="button" id="leave-room-btn" class="btn-sm btn-danger">Leave Room</button>
+       <span class="room-actions-hint">Removes you from this room. You can rejoin with the invite code.</span>`;
+
+  if (isOwner) {
+    document.getElementById('delete-room-btn')
+      .addEventListener('click', () => confirmRoomAction({
+        verb: 'delete',
+        prompt: 'Delete this room for everyone? This cannot be undone.',
+        apiPath: `/api/rooms/${ROOM_ID}`,
+      }));
+  } else {
+    document.getElementById('leave-room-btn')
+      .addEventListener('click', () => confirmRoomAction({
+        verb: 'leave',
+        prompt: 'Leave this room?',
+        apiPath: `/api/rooms/${ROOM_ID}/leave`,
+      }));
+  }
+}
+
+// Inline confirm box for leave/delete (same note-confirm pattern as memos).
+// On success the backend returns 204; we send the user back to My Rooms.
+function confirmRoomAction(cfg) {
+  const row = document.getElementById('room-actions-row');
+  if (row.querySelector('.note-confirm')) return;  // already confirming
+
+  const err = document.getElementById('room-action-error');
+  err.textContent = '';
+
+  const box = document.createElement('div');
+  box.className = 'note-confirm';
+  box.innerHTML = `
+    <span class="note-confirm-text">${cfg.prompt}</span>
+    <span class="note-confirm-actions">
+      <button type="button" class="btn-sm btn-danger room-confirm-yes">${cfg.verb === 'delete' ? 'Delete' : 'Leave'}</button>
+      <button type="button" class="btn-sm room-confirm-no">Cancel</button>
+    </span>
+  `;
+  row.innerHTML = '';
+  row.appendChild(box);
+
+  box.querySelector('.room-confirm-no')
+    .addEventListener('click', drawRoomActionButton);
+
+  box.querySelector('.room-confirm-yes').addEventListener('click', async () => {
+    const res = await authFetch(cfg.apiPath, { method: 'DELETE' });
+    if (!res.ok && res.status !== 204) {
+      const data = await res.json().catch(() => ({}));
+      showError(err, data.error || `Could not ${cfg.verb} the room.`);
+      drawRoomActionButton();
+      return;
+    }
+    window.location.href = '/index.html';
+  });
 }
 
 // Member list — GET /api/rooms/:id/members returns members in join order
