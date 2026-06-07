@@ -21,8 +21,6 @@ function today() {
     return new Date().toISOString().slice(0, 10);
 }
 
-const POETRYDB_URL = "https://poetrydb.org/random/1"; // random API from poetryDB
-const FETCH_TIMEOUT = 4000; // ms
 const LIVE_RETRIES = 5;
 const MIN_LINES = 4;
 const MAX_LINES = 30;
@@ -39,25 +37,9 @@ function isAcceptablePoem(poem) {
 // CASE1: fetching from poetryDB
 // fetch one random poem from PoetryDB. Returns a poem object {title, author, lines}
 // null; any type of failure (non-ok, timeout, network error, or PoetryDB error shape).
-async function fetchRandomFromApi() {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT);
-    try {
-        const res = await fetch(POETRYDB_URL, { signal: controller.signal });
-        if (!res.ok) return null;
-        const data = await res.json();
-        // success = a non-empty array whose first item has a lines array.
-        // anything else (e.g. { status, reason } error object) is a failure.
-        if (!Array.isArray(data) || data.length === 0 || !Array.isArray(data[0].lines)) {
-            return null;
-        }
-        return data[0];
-    } catch (err) {
-        return null; // timeout / abort / network / parse error
-    } finally {
-        clearTimeout(timer);
-    }
-}
+
+// moved to lib/poemFetch
+const { fetchRandomFromApi } = require("../lib/poemFetch");
 
 // CASE2: fallback; fetching from backup json file
 // pick a random acceptable, room-unseen poem from the offline fallback pool.
@@ -143,4 +125,4 @@ async function getToday(req, res) {
     }
 }
 
-module.exports = { getToday, fetchRandomFromApi };
+module.exports = { getToday };

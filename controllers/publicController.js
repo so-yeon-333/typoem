@@ -1,7 +1,7 @@
 // GET /api/public/poem - a single short poem for the non-member landing page.
 // resemble todayController logic - but no auth
 
-const { fetchRandomFromApi } = require("./todayController");
+const { fetchRandomFromApi } = require("../lib/poemFetch");
 
 const PUBLIC_MIN = 4;
 const PUBLIC_MAX = 12;
