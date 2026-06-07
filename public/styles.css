@@ -638,6 +638,11 @@ hr {
   text-indent: -1em;
 }
 
+/* PoetryDB _word_ markup is rendered as <em> (see wrapWords in room.js) */
+.line-text em {
+  font-style: italic;
+}
+
 .poem-line-blank {
   padding: 4px 0;
 }
