@@ -11,6 +11,7 @@ const roomsRouter = require('./routes/rooms');
 const dictionaryRouter = require('./routes/dictionary');
 const { roomMemosRouter, memosRouter } = require('./routes/memos');
 const { roomAnnotationsRouter, annotationsRouter } = require('./routes/annotations');
+const publicRouter = require('./routes/public'); 
 
 const app = express();
 app.use(express.json());
@@ -26,6 +27,7 @@ app.use('/api/memos', memosRouter);
 app.use('/api/rooms', roomAnnotationsRouter);
 app.use('/api/annotations', annotationsRouter);
 app.use('/api/dictionary', dictionaryRouter);
+app.use('/api/public', publicRouter);   
 
 
 // API docs
