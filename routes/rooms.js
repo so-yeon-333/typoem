@@ -14,6 +14,7 @@ router.get("/mine", controller.listMyRooms);
 router.post("/join", controller.joinRoom);
 router.get("/:id/members", controller.getMembers);
 router.get("/:id/today", todayController.getToday); // today's poem + memos + annotations
+router.get("/:id/history", todayController.getHistory); // past daily poems + contributors
 router.delete("/:id/leave", controller.leaveRoom); // must be above '/:id'
 router.delete("/:id", controller.deleteRoom);
 

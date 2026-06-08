@@ -125,4 +125,23 @@ async function getToday(req, res) {
     }
 }
 
-module.exports = { getToday };
+async function getHistory(req, res) {
+    try {
+        const room_id = parseId(req.params.id);
+        if (!room_id) return res.status(400).json({ error: "invalid room id" });
+
+        const room = await roomsModel.findById(room_id);
+        if (!room) return res.status(404).json({ error: "Room not found" });
+
+        const isMember = await roomsModel.isMember(room_id, req.user.id);
+        if (!isMember) return res.status(403).json({ error: "You are not a member of this room" });
+
+        const history = await poemsModel.listRoomHistory(room_id);
+        return res.status(200).json({ room: { id: room.id, name: room.name }, history });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: "Server error" });
+    }
+}
+
+module.exports = { getToday, getHistory };

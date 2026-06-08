@@ -100,7 +100,30 @@ components:
           type: string
           enum: [owner, member]
           example: owner
-
+    HistoryEntry:
+      type: object
+      properties:
+        date:
+          type: string
+          example: "2026-06-08"
+        poem_id:
+          type: integer
+          example: 3
+        title:
+          type: string
+          example: Now We Are Six
+        author:
+          type: string
+          example: A. A. Milne
+        contributor_count:
+          type: integer
+          example: 2
+        contributors:
+          type: string
+          nullable: true
+          description: Comma-separated nicknames of members who left memos, or null if none.
+          example: "Soyeon,Jiseop"
+          
     WordEntry:
       type: object
       properties:
@@ -710,6 +733,68 @@ paths:
                 $ref: '#/components/schemas/Error'
         '503':
           description: No fresh poem available right now; client should retry
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/rooms/{id}/history:
+    get:
+      tags: [Rooms]
+      summary: List a room's past daily poems
+      description: >
+        Returns the room's daily poems newest first, each with the number of
+        distinct members who left memos and their nicknames. Members only.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Room ID.
+          schema:
+            type: integer
+          example: 5
+      responses:
+        '200':
+          description: Room history
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  room:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 5
+                      name:
+                        type: string
+                        example: English Lit Study
+                  history:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/HistoryEntry'
+        '400':
+          description: Invalid room id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Missing or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Not a member of this room
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Room not found
           content:
             application/json:
               schema:
