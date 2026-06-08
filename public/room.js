@@ -307,7 +307,7 @@ function renderLine(line) {
 // Punctuation is split off the dictionary lookup so "And," looks up "and",
 // while the line still DISPLAYS the punctuation verbatim.
 function wrapWords(text) {
-  let t = text.replace(/--/g, '\u2014');   // 1) em dash, before tokenising
+  let t = text.replace(/-{2,}/g, '\u2014');   // 1) em dash, before tokenising
 
   // 2) Paired emphasis _..._ -> <em>...</em>. A lone/unmatched underscore is
   //    left as a literal character. Inner text is word-wrapped as usual, so
