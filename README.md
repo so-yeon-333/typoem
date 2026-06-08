@@ -41,13 +41,18 @@ This project is the team submission for **ITM519 Web Programming (Spring 2026)**
 - Attach line-level annotations to specific lines
 - Look up unknown words with an in-app dictionary
 
-**Stretch (time permitting)**
+**Additional**
 
-- Personal vocabulary notebook
-- Review past poems with notes
-- Likes and replies on memos
+- **Personal vocabulary notebook** — save words from the dictionary popup and review them later (`/api/vocab`)
+- **Poem history** — browse every daily poem a room has read, newest first, with the members who left notes on each (`/api/rooms/:id/history`)
+- **Memo likes** — like and unlike memos, with per-memo like counts (`/api/memos/:id/like`)
+
+**Stretch (not implemented)**
+
+- Replies on memos
 - Streaks and badges
 - Calendar with friend activity
+- Review past poems with notes
 - Dark mode
 
 ---
@@ -84,12 +89,17 @@ typoem/
 ├── package-lock.json
 ├── routes/                 # Express routers
 │   ├── auth.js
+│   ├── users.js
 │   ├── rooms.js
 │   ├── memos.js
 │   ├── annotations.js
-│   └── dictionary.js
+│   ├── dictionary.js
+│   ├── public.js
+│   └── vocab.js
 ├── controllers/            # Route handler logic
 ├── models/                 # DB access layer
+├── lib/
+│   └── poemFetch.js        # Shared PoetryDB fetch helper
 ├── middleware/
 │   └── authMiddleware.js
 ├── db/
@@ -100,13 +110,18 @@ typoem/
 ├── tests/                  # Jest + Supertest tests
 ├── scripts/                # Utility scripts (e.g., fetch-poems.js)
 ├── public/                 # Frontend (Lecture 12 pattern)
-│   ├── index.html / index.js          # Home — room list
+│   ├── landing.html / landing.js      # Public landing page (logged-out visitors)
+│   ├── index.html / index.js          # My Rooms — room list (logged-in home)
 │   ├── register.html / register.js
 │   ├── login.html / login.js
 │   ├── create-room.html / create-room.js
 │   ├── join.html / join.js
 │   ├── room.html / room.js            # Today's poem + memos + annotations
+│   ├── history.html / history.js      # Past daily poems for a room
+│   ├── vocab.html / vocab.js          # Personal vocabulary notebook
+│   ├── dict-popup.js                  # Dictionary popup (word lookup + save)
 │   ├── auth.js                        # Shared helper (JWT, requireLogin, authFetch)
+│   ├── assets/                        # Static assets (e.g., paw.svg)
 │   └── styles.css
 ├── .github/
 │   └── workflows/
@@ -162,7 +177,7 @@ Create a `.env` file based on `.env.example`:
 | `DB_PATH` | Path to the SQLite database file | `./typoem.db` |
 | `NODE_ENV` | Environment mode | `development` or `production` |
 
-> ⚠️ `JWT_SECRET` and `JWT_EXPIRES_IN` are **required**. The server validates them on startup (`server.js`) and exits immediately if either is missing.
+> ⚠️ `JWT_SECRET` and `JWT_EXPIRES_IN` are **required**. The server checks them on startup (`server.js`) and stops right away if either one is missing.
 
 > ⚠️ **Never commit `.env` to git.** It is listed in `.gitignore`.
 
@@ -214,7 +229,7 @@ npm run test:coverage
 
 **What's tested:**
 
-- Unit tests for controllers, validators, and utilities (at least 2 non-trivial modules)
+- Unit tests for controllers, validators, and utilities (at least 2 modules with real logic)
 - API tests covering at least one authenticated route, one error case (401/404/400), and one successful main-flow endpoint
 
 Tests run automatically on every push to `main` and on every pull request via GitHub Actions (see CI badge at the top of this README).
@@ -225,7 +240,7 @@ Tests run automatically on every push to `main` and on every pull request via Gi
 
 The OpenAPI 3.0 specification is in `openapi.yaml` (repository root).
 
-When the server is running, interactive API documentation is available at:
+When the server is running, you can open the API documentation (where you can try the endpoints in the browser) at:
 
 ```
 http://localhost:3000/api/docs
@@ -239,16 +254,16 @@ The docs are served by loading the static `openapi.yaml` file with `yamljs` and 
 
 ## Deployment
 
-The application is deployed on **Render (free tier)** for convenient access during evaluation.
+The application is deployed on **Render (free tier)** so it can be opened easily during evaluation.
 
 **Deployed URL**: https://typoem.onrender.com
 
 ### Notes on Render's free tier
 
-- Render's free web service uses an **ephemeral filesystem**, so the SQLite database is reset on every redeploy or after 15 minutes of inactivity.
-- To handle this, the database is seeded on startup with curated poems, so the app is always demonstrable.
-- User-generated data (accounts, rooms, memos) persists only between redeploys.
-- Free services spin down after 15 minutes of inactivity; the first request after spin-down may take ~30 seconds.
+- Render's free web service does not keep files saved on disk, so the SQLite database is wiped on every redeploy or after 15 minutes of inactivity.
+- To handle this, the app fills the database with a set of ready-made poems each time it starts, so there is always something to show.
+- User-created data (accounts, rooms, memos) is only kept between redeploys.
+- Free services go to sleep after 15 minutes of inactivity; the first request after that may take about 30 seconds to wake up.
 
 ### Running locally as a fallback
 
@@ -292,7 +307,7 @@ All commit messages are written in English.
 3. Push the branch and open a Pull Request on GitHub
 4. CI must pass before merging
 5. Review from a teammate is recommended but not required
-6. Use Merge commit to preserve individual commit history on `main`
+6. Use Merge commit so each person's commit history stays visible on `main`
 7. Delete the feature branch after merging (GitHub does this automatically)
 
 ### Git Configuration
@@ -337,7 +352,7 @@ git config user.email "your-github-email@example.com"
   1. Help structuring and scaffolding which test cases to write
   2. Help with areas not covered in class or unclear, such as SQLite handling
   3. Debugging when errors occurred or behavior did not match intent
-  4. Because the team conventions and project specification are very specific, repeatedly cross-checking with AI whether his code conformed to them
+  4. Because the team conventions and project specification are very specific, repeatedly checking with AI whether his code followed them
 
 - **권시현 (Sihyun)**
   1. Structuring the `sqlite` + `sqlite3` handling and the `initDb()` / `getDb()` layer
@@ -351,7 +366,7 @@ git config user.email "your-github-email@example.com"
   3. Writing the regex that strips punctuation from PoetryDB markup (`_italic_`, em dashes) so dictionary lookups don't break
   4. Debugging the mobile popup-position bug and word-lookup failures caused by punctuation
 
-All AI-assisted output is reviewed, understood, and modified by the responsible team member before being committed. Individual understanding will be verified during the live evaluation (Section 5.2 of the specification).
+All AI-assisted output is reviewed, understood, and modified by the responsible team member before being committed.
 
 ---
 
