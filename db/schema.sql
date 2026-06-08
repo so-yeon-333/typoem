@@ -89,3 +89,25 @@ CREATE TABLE IF NOT EXISTS word_cache (
   phonetic TEXT,
   definitions TEXT NOT NULL
 );
+
+-- Memo Likes
+CREATE TABLE IF NOT EXISTS memo_likes (
+  memo_id INTEGER NOT NULL,
+  user_id INTEGER NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (memo_id, user_id),
+  FOREIGN KEY (memo_id) REFERENCES memos(id),
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+-- Personal Vocabulary
+CREATE TABLE IF NOT EXISTS vocab (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL,
+  word TEXT NOT NULL,
+  phonetic TEXT,
+  definition TEXT NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE(user_id, word),
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
