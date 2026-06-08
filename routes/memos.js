@@ -15,5 +15,8 @@ const memosRouter = express.Router();
 memosRouter.use(authenticate);
 memosRouter.patch("/:id", controller.updateMemo);
 memosRouter.delete("/:id", controller.deleteMemo);
+memosRouter.patch("/:id", controller.updateMemo);
+memosRouter.delete("/:id", controller.deleteMemo);
+memosRouter.post("/:id/like", controller.toggleLike);
 
 module.exports = { roomMemosRouter, memosRouter };
