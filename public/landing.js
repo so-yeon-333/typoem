@@ -21,7 +21,7 @@ function escapeHtml(str) {
 //   _word_  -> <em>word</em>  (Project Gutenberg italics)
 // Text is escaped first so the markup can't inject HTML.
 function formatLine(text) {
-  let t = escapeHtml(text).replace(/--/g, '\u2014');   // em dash
+  let t = escapeHtml(text).replace(/-{2,}/g, '\u2014');   // em dash
   t = t.replace(/_([^_]+)_/g, '<em>$1</em>');          // paired _italics_
   return t;
 }
