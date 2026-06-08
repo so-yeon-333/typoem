@@ -743,9 +743,49 @@ hr {
 }
 
 .note-controls {
-  margin-left: auto;
   display: inline-flex;
   gap: 12px;
+}
+
+/* like (heart) button on a memo card — sits at the right of .note-meta,
+   matching the faint serif tone of the meta row. */
+.like-btn {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: 'Gentium Book Plus', Georgia, serif;
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: #8a7a5e;
+}
+
+/* fixed-width heart so the outline (♡) and filled (♥) glyphs don't shift
+   the count beside them when toggled. */
+.like-heart {
+  display: inline-block;
+  width: 1em;
+  text-align: center;
+  font-size: 13px;
+  line-height: 1;
+  color: #c9bda5;
+}
+
+.like-btn:hover .like-heart {
+  color: #722f37;
+}
+
+.like-btn.liked .like-heart {
+  color: #722f37;
+}
+
+/* when a like button is present, the controls follow it (no auto-push) */
+.like-btn + .note-controls {
+  margin-left: 12px;
 }
 
 /* compact inline text button (used for edit/delete + logout) */
