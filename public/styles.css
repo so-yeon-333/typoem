@@ -1301,3 +1301,85 @@ hr {
   -webkit-mask: url('/assets/paw.svg') no-repeat center / contain;
           mask: url('/assets/paw.svg') no-repeat center / contain;
 }
+
+/* ---- Masthead nav: slightly larger nav links + username ---- */
+.masthead-nav .link-btn,
+.masthead-nav .nav-user {
+  font-size: 16px;
+}
+
+/* ---- Notebook list: flex, wide cards, 1–2 per row ---- */
+.vocab-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+}
+
+.vocab-card {
+  flex: 1 1 380px;          /* wide cards: 1 per row when narrow, 2 when there's room */
+  border: 1px solid #2b1f12;
+  border-radius: 0;
+  background: #f8f2e2;
+  box-shadow: 4px 4px 0 rgba(43, 31, 18, 0.18);
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+}
+
+.vocab-word {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-size: 24px;
+  color: #2b1f12;
+  margin-bottom: 4px;
+  text-transform: lowercase;
+}
+.vocab-phon {
+  font-family: 'Charis SIL', 'Doulos SIL', 'Gentium Book Plus', Georgia, serif;
+  font-style: normal;
+  font-size: 15px;
+  color: #5a4a35;
+  margin-left: 6px;
+}
+.vocab-def {
+  font-family: 'Gentium Book Plus', Georgia, serif;
+  font-size: 15px;
+  color: #2b1f12;
+  line-height: 1.5;
+  margin-bottom: 14px;
+  flex-grow: 1;
+}
+
+.vocab-card .link-btn {
+  align-self: flex-start;
+  font-size: 13px;
+  color: #722f37;
+}
+.vocab-card .link-btn:hover {
+  color: #2b1f12;
+}
+
+/* ---- Dictionary popup: Save button ---- */
+.dict-popup-save {
+  font-family: 'IM Fell English SC', Georgia, serif;
+  font-size: 13px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #722f37;
+  border-bottom: none;
+  text-decoration: none;
+  white-space: nowrap;
+  margin-left: auto;   /* push Save + close to the right, word stays left */
+}
+.dict-popup-save:hover {
+  color: #2b1f12;
+}
+.dict-popup-save:disabled {
+  color: #5a4a35;
+  cursor: default;
+}
+
+/* On small screens, cards go full-width */
+@media (max-width: 600px) {
+  .vocab-card { flex-basis: 100%; }
+}
