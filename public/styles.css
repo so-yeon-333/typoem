@@ -375,8 +375,14 @@ hr {
 }
 
 .room-meta .paw {
-  filter: grayscale(1) brightness(0.45);
-  font-size: 14px;
+  /* Cat-paw mark before the member count (matches /assets/paw.svg). */
+  display: inline-block;
+  width: 16px;
+  height: 14px;
+  vertical-align: -1px;
+  background: #2b1f12;
+  -webkit-mask: url('/assets/paw.svg') no-repeat center / contain;
+          mask: url('/assets/paw.svg') no-repeat center / contain;
 }
 
 /* ---- Buttons (links styled as buttons; matches global <button>) ---- */
@@ -1241,3 +1247,57 @@ hr {
 .landing-cta .auth-footer {
    margin-top: 18px; 
   }
+
+/* ---- Cat-paw decoration (empty states + section dividers) ---- */
+/* Uses CSS mask so the paw color is controllable via `background`.
+   The paw silhouette lives in /assets/paw.svg. */
+
+/* Large faint paw shown above an empty state */
+.empty-state::before {
+  content: '';
+  display: block;
+  width: 56px;
+  height: 50px;
+  margin: 0 auto 14px;
+  background: #c9bca0;
+  -webkit-mask: url('/assets/paw.svg') no-repeat center / contain;
+          mask: url('/assets/paw.svg') no-repeat center / contain;
+}
+
+/* Smaller paw above a compact empty line (opt in with .with-paw) */
+.empty-sub.with-paw::before {
+  content: '';
+  display: block;
+  width: 44px;
+  height: 40px;
+  margin: 0 auto 8px;
+  background: #c9bca0;
+  -webkit-mask: url('/assets/paw.svg') no-repeat center / contain;
+          mask: url('/assets/paw.svg') no-repeat center / contain;
+}
+
+/* Paw divider: a thin rule with a paw print in the middle.
+   Drop-in companion to .rule-thin. */
+.rule-paw {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 18px 0;
+}
+
+.rule-paw::before,
+.rule-paw::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #c9bca0;
+}
+
+.rule-paw .paw {
+  width: 20px;
+  height: 18px;
+  flex: 0 0 auto;
+  background: #8a6f52;
+  -webkit-mask: url('/assets/paw.svg') no-repeat center / contain;
+          mask: url('/assets/paw.svg') no-repeat center / contain;
+}
