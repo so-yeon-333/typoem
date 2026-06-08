@@ -26,6 +26,8 @@ tags:
     description: The room's poem of the day with its memos and line annotations
   - name: Public
     description: Unauthenticated endpoints for the landing page
+  - name: Vocab
+    description: Personal vocabulary notebook
 
 components:
   securitySchemes:
@@ -1387,7 +1389,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-                /api/vocab:
+  /api/vocab:
     get:
       tags: [Vocab]
       summary: List my saved words
