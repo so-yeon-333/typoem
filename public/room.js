@@ -23,6 +23,11 @@ document.getElementById('today').textContent = new Date().toLocaleDateString('en
   day: 'numeric',
 });
 
+// Point the "Poem history" link at this room's history page.
+if (ROOM_ID) {
+  document.getElementById('history-link').href = `/history.html?id=${ROOM_ID}`;
+}
+
 // ---- Escape user-provided text before inserting into HTML (XSS guard) ----
 function escapeHtml(str) {
   const div = document.createElement('div');
@@ -368,10 +373,28 @@ function renderMemos(memos) {
     b.addEventListener('click', () => editMemo(Number(b.dataset.memoEdit))));
   listEl.querySelectorAll('[data-memo-del]').forEach((b) =>
     b.addEventListener('click', () => deleteMemo(Number(b.dataset.memoDel))));
+  listEl.querySelectorAll('[data-memo-like]').forEach((b) =>
+    b.addEventListener('click', () => toggleLike(Number(b.dataset.memoLike))));
+}
+
+// Toggle a like on a memo. The backend returns the authoritative new state
+// ({ liked, like_count }); update just this button rather than reloading the
+// whole list, so the user's scroll position and any open editors are kept.
+async function toggleLike(id) {
+  const res = await authFetch(`/api/memos/${id}/like`, { method: 'POST' });
+  if (!res.ok) return;
+  const data = await res.json();
+  const btn = document.querySelector(`[data-memo-like="${id}"]`);
+  if (!btn) return;
+  btn.classList.toggle('liked', data.liked);
+  btn.setAttribute('aria-pressed', data.liked ? 'true' : 'false');
+  btn.querySelector('.like-heart').textContent = data.liked ? '\u2665' : '\u2661';
+  btn.querySelector('.like-count').textContent = data.like_count;
 }
 
 function memoItem(memo) {
   const mine = me && memo.user_id === me.id;
+  const liked = memo.liked_by_me ? ' liked' : '';
   const controls = mine
     ? `<span class="note-controls">
          <button type="button" class="link-btn" data-memo-edit="${memo.id}">Edit</button>
@@ -384,6 +407,11 @@ function memoItem(memo) {
       <p class="note-meta">
         <span class="note-author">${escapeHtml(memo.author_nickname)}</span>
         <span class="note-date">${formatDate(memo.created_at)}</span>
+        <button type="button" class="like-btn${liked}" data-memo-like="${memo.id}"
+                aria-pressed="${memo.liked_by_me ? 'true' : 'false'}" aria-label="Like this memo">
+          <span class="like-heart" aria-hidden="true">${memo.liked_by_me ? '\u2665' : '\u2661'}</span>
+          <span class="like-count">${memo.like_count || 0}</span>
+        </button>
         ${controls}
       </p>
     </article>

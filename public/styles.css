@@ -529,6 +529,7 @@ hr {
   text-decoration: none;
 }
 .back-link a:hover { color: #2b1f12; text-decoration: underline; }
+.back-sep { color: #b3a584; margin: 0 6px; }
 
 
 
@@ -743,9 +744,117 @@ hr {
 }
 
 .note-controls {
-  margin-left: auto;
   display: inline-flex;
   gap: 12px;
+}
+
+/* like (heart) button on a memo card — sits at the right of .note-meta,
+   matching the faint serif tone of the meta row. */
+.like-btn {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: 'Gentium Book Plus', Georgia, serif;
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: #8a7a5e;
+}
+
+/* keep it a bare glyph: cancel the global button hover/focus chrome so no
+   dark box appears behind the heart. */
+.like-btn:hover {
+  background: none;
+  color: #8a7a5e;
+}
+
+.like-btn:focus {
+  outline: none;
+}
+
+/* fixed-width heart so the outline (♡) and filled (♥) glyphs don't shift
+   the count beside them when toggled. */
+.like-heart {
+  display: inline-block;
+  width: 1em;
+  text-align: center;
+  font-size: 13px;
+  line-height: 1;
+  color: #c9bda5;
+}
+
+.like-btn:hover .like-heart {
+  color: #722f37;
+}
+
+.like-btn.liked .like-heart {
+  color: #722f37;
+}
+
+/* when a like button is present, the controls follow it (no auto-push) */
+.like-btn + .note-controls {
+  margin-left: 12px;
+}
+
+/* ---- Poem history (one-line cards: date · poem · contributors) ---- */
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.history-row {
+  border: 1px solid #2b1f12;
+  background: #f8f2e2;
+  padding: 16px 20px;
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.history-date {
+  flex: 0 0 auto;
+  font-family: 'Gentium Book Plus', Georgia, serif;
+  font-size: 13px;
+  letter-spacing: 1px;
+  color: #5a4a35;
+}
+
+.history-poem {
+  flex: 1 1 auto;
+}
+
+.history-title {
+  font-family: 'IM Fell English SC', Georgia, serif;
+  font-size: 17px;
+}
+
+.history-author {
+  font-style: italic;
+  color: #5a4a35;
+}
+
+.history-contrib {
+  flex: 0 0 auto;
+  margin-left: auto;
+  text-align: right;
+  font-family: 'Gentium Book Plus', Georgia, serif;
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: #8a7a5e;
+}
+
+.history-names {
+  color: #722f37;
+}
+
+.history-none {
+  font-style: italic;
 }
 
 /* compact inline text button (used for edit/delete + logout) */
