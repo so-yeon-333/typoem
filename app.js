@@ -14,7 +14,6 @@ const { roomAnnotationsRouter, annotationsRouter } = require('./routes/annotatio
 const publicRouter = require('./routes/public'); 
 
 const app = express();
-app.use(express.json());
 
 app.use(express.json());
 

@@ -1206,29 +1206,38 @@ hr {
   padding: 56px 24px 72px;
   text-align: center;
 }
+
 .landing-headline { margin-bottom: 40px; }
+
 .landing-poem {
   text-align: center;
 }
-.landing-poem {
-  text-align: center;
-}
+
 .landing-poem .poem-body {
   display: inline-block;
   text-align: left;
 }
+
 .landing-poem .poem-line {
   display: block;   
 }
+
 .landing-poem .line-text {
   padding-left: 0;  
   text-indent: 0;
 }
-.landing-cta { margin-top: 8px; }
+
+.landing-cta {
+   margin-top: 8px; 
+  }
+
 .landing-invite {
   font-family: 'IM Fell English SC', serif;
   font-size: 18px;
   color: #2b1f12;
   margin-bottom: 16px;
 }
-.landing-cta .auth-footer { margin-top: 18px; }
+
+.landing-cta .auth-footer {
+   margin-top: 18px; 
+  }
