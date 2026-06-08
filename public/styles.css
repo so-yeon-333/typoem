@@ -764,6 +764,17 @@ hr {
   color: #8a7a5e;
 }
 
+/* keep it a bare glyph: cancel the global button hover/focus chrome so no
+   dark box appears behind the heart. */
+.like-btn:hover {
+  background: none;
+  color: #8a7a5e;
+}
+
+.like-btn:focus {
+  outline: none;
+}
+
 /* fixed-width heart so the outline (♡) and filled (♥) glyphs don't shift
    the count beside them when toggled. */
 .like-heart {
