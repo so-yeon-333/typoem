@@ -84,4 +84,33 @@ describe("GET /api/rooms/:id/history", () => {
     });
     expect(poemsModel.listRoomHistory).toHaveBeenCalledWith(5);
   });
+
+  test("returns 200 and includes annotation-only contributors", async () => {
+    // The UNION in listRoomHistory counts memo authors and annotators alike,
+    // so a user who left only a line annotation (no memo) still appears.
+    // (Model is mocked here; this verifies the controller passes the shape
+    //  through. The UNION SQL itself is verified manually against a local DB.)
+    roomsModel.findById.mockResolvedValue(room);
+    roomsModel.isMember.mockResolvedValue(true);
+
+    const history = [
+      {
+        date: "2026-06-08",
+        poem_id: 3,
+        title: "Now We Are Six",
+        author: "A. A. Milne",
+        contributor_count: 2,
+        contributors: "Soyeon,Gyeongyoon", // Gyeongyoon left only an annotation
+      },
+    ];
+    poemsModel.listRoomHistory.mockResolvedValue(history);
+
+    const res = await request(app)
+      .get("/api/rooms/5/history")
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.history[0].contributor_count).toBe(2);
+    expect(res.body.history[0].contributors).toContain("Gyeongyoon");
+  });
 });
