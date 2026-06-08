@@ -116,6 +116,23 @@ async function listAnnotationsForRoomPoem(room_id, poem_id) {
     );
 }
 
+async function listRoomHistory(room_id) {
+    return await getDb().all(
+        `SELECT d.date, p.id AS poem_id, p.title, p.author,
+                (SELECT COUNT(DISTINCT m.user_id)
+                   FROM memos m
+                  WHERE m.room_id = d.room_id AND m.poem_id = d.poem_id) AS contributor_count,
+                (SELECT GROUP_CONCAT(DISTINCT u.nickname)
+                   FROM memos m JOIN users u ON u.id = m.user_id
+                  WHERE m.room_id = d.room_id AND m.poem_id = d.poem_id) AS contributors
+           FROM daily_room_poems d
+           JOIN poems p ON p.id = d.poem_id
+          WHERE d.room_id = ?
+          ORDER BY d.date DESC`,
+        [room_id]
+    );
+}
+
 module.exports = {
     getTodayPoemId,          // today's assigned poem id for this room, or null
     findPoemByTitleAuthor,   // cache lookup only: returns id if stored, else null (no write)
@@ -125,6 +142,7 @@ module.exports = {
     assignPoemToRoom,        // assign today's poem to the room; on clash, returns the winning poem_id
     findPoemWithLines,       // load a stored poem + its lines (for the response)
     listAnnotationsForRoomPoem, // get annotations on this poem in this room
+    listRoomHistory
 };
 
 // Three similarly-named helpers — don't mix them up:
