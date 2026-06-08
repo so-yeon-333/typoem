@@ -11,6 +11,7 @@
   let popup = null;
   let popupBody = null;
   let activeWordEl = null;
+  let currentEntry = null; 
 
   function ensurePopup() {
     if (popup) return;
@@ -24,6 +25,7 @@
     popup.innerHTML = `
       <div class="dict-popup-head">
         <h4 class="dict-popup-word" id="dict-popup-word"></h4>
+        <button type="button" class="link-btn dict-popup-save" id="dict-popup-save" hidden>Save</button>
         <button type="button" class="link-btn dict-popup-close" aria-label="Close">&times;</button>
       </div>
       <div class="dict-popup-body" id="dict-popup-body"></div>
@@ -34,6 +36,9 @@
 
     // Close button
     popup.querySelector('.dict-popup-close').addEventListener('click', closeDictionary);
+
+    // Save button — store the looked-up word in the personal notebook
+    popup.querySelector('#dict-popup-save').addEventListener('click', saveCurrentWord);
 
     // Close on Escape
     document.addEventListener('keydown', (e) => {
@@ -58,9 +63,67 @@
 
   function closeDictionary() {
     if (popup) popup.hidden = true;
+    hideSaveButton();
+    currentEntry = null;
     if (activeWordEl) {
       activeWordEl.classList.remove('active');
       activeWordEl = null;
+    }
+  }
+
+  // ---- Save button helpers ----
+  function saveButtonEl() {
+    return popup ? popup.querySelector('#dict-popup-save') : null;
+  }
+
+  function hideSaveButton() {
+    const btn = saveButtonEl();
+    if (btn) btn.hidden = true;
+  }
+
+  function showSaveButton() {
+    const btn = saveButtonEl();
+    if (!btn) return;
+    btn.hidden = false;
+    btn.disabled = false;
+    btn.textContent = 'Save';
+  }
+
+  // Store the first definition of the current word in the personal notebook.
+  async function saveCurrentWord() {
+    if (!currentEntry || !currentEntry.word) return;
+    const btn = saveButtonEl();
+    const defs = Array.isArray(currentEntry.definitions) ? currentEntry.definitions : [];
+    const definition = (defs[0] && defs[0].definition) || '';
+    if (!definition) return;
+
+    if (btn) btn.disabled = true;
+
+    try {
+      const res = await authFetch('/api/vocab', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          word: currentEntry.word,
+          phonetic: currentEntry.phonetic || null,
+          definition,
+        }),
+      });
+
+      if (res.ok || res.status === 201) {
+        if (btn) {
+          btn.textContent = 'Saved \u2713';
+          setTimeout(() => {
+            const b = saveButtonEl();
+            if (b && !popup.hidden) { b.textContent = 'Save'; b.disabled = false; }
+          }, 5000);
+        }
+      } else if (btn) {
+        btn.disabled = false;
+      }
+    } catch (err) {
+      console.error(err);
+      if (btn) btn.disabled = false;
     }
   }
 
@@ -70,6 +133,7 @@
 
 // ---- Render the slim API payload { word, phonetic, definitions[] } ----
   function renderEntry(data) {
+    currentEntry = data || null;
     document.getElementById('dict-popup-word').textContent = data.word || '';
 
     let html = '';
@@ -80,6 +144,7 @@
     const defs = Array.isArray(data.definitions) ? data.definitions : [];
     if (defs.length === 0) {
       html += `<p class="dict-empty">No definition available.</p>`;
+      hideSaveButton();
     } else {
       html += '<ol class="dict-def-list">';
       for (const d of defs) {
@@ -92,6 +157,7 @@
         html += `<li>${pos}${escapeHtml(d.definition)}${ex ? '<br>' + ex : ''}</li>`;
       }
       html += '</ol>';
+      showSaveButton();
     }
     setBody(html);
   }
@@ -139,6 +205,8 @@
     if (activeWordEl) activeWordEl.classList.add('active');
     
     document.getElementById('dict-popup-word').textContent = word;
+    currentEntry = null;
+    hideSaveButton();
     setBody('<p class="dict-loading">Looking up&hellip;</p>');
     popup.hidden = false;
     positionPopup(anchorEl);
