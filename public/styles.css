@@ -1477,7 +1477,7 @@ hr {
 }
 .section-bar-inner {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
 }
 .section-link {
   font-family: 'IM Fell English SC', Georgia, serif;
@@ -1489,15 +1489,8 @@ hr {
   padding: 11px 26px;
   position: relative;
 }
-.section-link + .section-link::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  height: 16px;
-  border-left: 1px solid #c9bca0;
-}
+.section-bar-inner .section-link:first-child { padding-left: 0; }
+.section-bar-inner .section-link:last-child  { padding-right: 0; }
 .section-link:hover { color: #722f37; }
 .section-link.is-active { color: #722f37; text-decoration: underline; }
 
