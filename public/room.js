@@ -23,6 +23,11 @@ document.getElementById('today').textContent = new Date().toLocaleDateString('en
   day: 'numeric',
 });
 
+// Point the "Poem history" link at this room's history page.
+if (ROOM_ID) {
+  document.getElementById('history-link').href = `/history.html?id=${ROOM_ID}`;
+}
+
 // ---- Escape user-provided text before inserting into HTML (XSS guard) ----
 function escapeHtml(str) {
   const div = document.createElement('div');
