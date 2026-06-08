@@ -328,7 +328,7 @@ hr {
 }
 .rule-double {
   border-top: 3px double #2b1f12;
-  margin: 14px 0 26px;
+  margin: 14px -24px 26px;
 }
 
 /* ---- Status line ---- */
@@ -516,22 +516,6 @@ hr {
   margin-bottom: 12px;
 }
 
-.back-link {
-  text-align: center;
-  margin-top: 24px;
-}
-.back-link a {
-  font-family: 'IM Fell English SC', Georgia, serif;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  font-size: 12px;
-  color: #5a4a35;
-  text-decoration: none;
-}
-.back-link a:hover { color: #2b1f12; text-decoration: underline; }
-.back-sep { color: #b3a584; margin: 0 6px; }
-
-
 
 
 /* =================================================
@@ -573,15 +557,6 @@ hr {
    Page: Room — Today's Poem (P13)
    ================================================= */
 
-.back-link {
-  font-family: 'IM Fell English SC', Georgia, serif;
-  font-size: 12px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  text-align: left;
-  margin-top: 0;
-  margin-bottom: 12px;
-}
 
 /* Lift the room headline up for better vertical balance (room page only) */
 #room-name {
@@ -1411,11 +1386,6 @@ hr {
           mask: url('/assets/paw.svg') no-repeat center / contain;
 }
 
-/* ---- Masthead nav: slightly larger nav links + username ---- */
-.masthead-nav .link-btn,
-.masthead-nav .nav-user {
-  font-size: 16px;
-}
 
 /* ---- Notebook list: flex, wide cards, 1–2 per row ---- */
 .vocab-list {
@@ -1491,4 +1461,72 @@ hr {
 /* On small screens, cards go full-width */
 @media (max-width: 600px) {
   .vocab-card { flex-basis: 100%; }
+}
+
+/* =================================================
+   Global navigation — section bar + room sub-nav
+   feature/global-nav · matches 880px masthead width
+   ================================================= */
+
+/* ---- Section bar: top-level nav, centered ---- */
+.section-bar {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 0 24px;
+  border-bottom: 1px solid #2b1f12;
+}
+.section-bar-inner {
+  display: flex;
+  justify-content: space-between;
+}
+.section-link {
+  font-family: 'IM Fell English SC', Georgia, serif;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  font-size: 15px;
+  color: #2b1f12;
+  text-decoration: none;
+  padding: 11px 26px;
+  position: relative;
+}
+.section-bar-inner .section-link:first-child { padding-left: 0; }
+.section-bar-inner .section-link:last-child  { padding-right: 0; }
+.section-link:hover { color: #722f37; }
+.section-link.is-active { color: #722f37; text-decoration: underline; }
+
+
+/* ---- Room sub-nav: room name left, links right ---- */
+.room-subnav {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 9px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #c9bca0;
+}
+.room-subnav .room-name {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-size: 17px;
+  color: #2b1f12;
+}
+.room-subnav-links {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-family: 'IM Fell English SC', Georgia, serif;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 12px;
+}
+.room-subnav-links a { color: #5a4a35; text-decoration: none; }
+.room-subnav-links a:hover { color: #722f37; }
+.room-subnav-links a.is-active { color: #722f37; text-decoration: underline; }
+.room-subnav-links .sep { color: #c9bca0; }
+
+/* ---- Mobile ---- */
+@media (max-width: 600px) {
+  .section-link { padding: 10px 16px; font-size: 13px; letter-spacing: 2px; }
+  .room-subnav { flex-direction: column; gap: 6px; align-items: flex-start; }
 }

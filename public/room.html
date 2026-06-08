@@ -27,11 +27,28 @@
     <p class="masthead-date" id="today"></p>
   </header>
 
+  <!-- Global section bar -->
+  <nav class="section-bar" aria-label="Sections">
+    <div class="section-bar-inner">
+      <a href="/index.html" class="section-link">My Rooms</a>
+      <a href="/vocab.html" class="section-link">My Vocabulary</a>
+    </div>
+  </nav>
+
+  <!-- Room sub-nav: room name left, room links right -->
+  <nav class="room-subnav" aria-label="Room">
+    <span class="room-name" id="room-name">&hellip;</span>
+    <div class="room-subnav-links">
+      <a href="#" class="is-active">Today&rsquo;s Poem</a>
+      <span class="sep">&middot;</span>
+      <a id="history-link" href="/index.html">Poem History</a>
+    </div>
+  </nav>
+
   <main class="page">
-    <p class="back-link"><a href="/index.html">&larr; My Rooms</a> <span class="back-sep">&middot;</span> <a id="history-link" href="/index.html">Poem history &rarr;</a></p>
 
     <div class="page-headline">
-      <h1 id="room-name">&hellip;</h1>
+      <h1 id="page-title">Today&rsquo;s Poem</h1>
       <div class="rule-double"></div>
     </div>
 
