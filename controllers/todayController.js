@@ -108,7 +108,7 @@ async function getToday(req, res) {
         }
 
         const poem = await poemsModel.findPoemWithLines(poem_id);
-        const memos = await memosModel.listForRoomPoem(room_id, poem_id);
+        const memos = await memosModel.listForRoomPoem(room_id, poem_id, req.user.id);
         const annotations = await poemsModel.listAnnotationsForRoomPoem(room_id, poem_id);
 
         res.set("Cache-Control", "no-store"); // GET has side effects + data changes; don't cache
