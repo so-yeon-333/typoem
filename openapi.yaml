@@ -130,6 +130,25 @@ components:
           type: boolean
           description: True if the entry was served from word_cache instead of the external API.
           example: true
+    VocabEntry:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        word:
+          type: string
+          example: clever
+        phonetic:
+          type: string
+          nullable: true
+          example: /ˈklɛvə/
+        definition:
+          type: string
+          example: Quick to understand, learn, and devise or apply ideas.
+        created_at:
+          type: string
+          example: "2026-06-08 09:00:00"
     Memo:
       type: object
       properties:
@@ -1216,6 +1235,104 @@ paths:
                 $ref: '#/components/schemas/Error'
         '404':
           description: Room not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                /api/vocab:
+    get:
+      tags: [Vocab]
+      summary: List my saved words
+      description: Returns the current user's personal vocabulary notebook, newest first.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of saved words
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VocabEntry'
+        '401':
+          description: Missing or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags: [Vocab]
+      summary: Save a word to my notebook
+      description: >
+        Saves a looked-up word to the current user's notebook.
+        Duplicate words for the same user are ignored (UNIQUE on user_id + word).
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [word, definition]
+              properties:
+                word:
+                  type: string
+                  example: clever
+                phonetic:
+                  type: string
+                  nullable: true
+                  example: /ˈklɛvə/
+                definition:
+                  type: string
+                  example: Quick to understand, learn, and devise or apply ideas.
+      responses:
+        '201':
+          description: Word saved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VocabEntry'
+        '400':
+          description: Invalid word or missing definition
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Missing or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/vocab/{id}:
+    delete:
+      tags: [Vocab]
+      summary: Delete a saved word
+      description: Removes one of the current user's saved words. Cannot delete other users' words.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the vocab entry to delete.
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '204':
+          description: Word deleted (no content)
+        '400':
+          description: Invalid id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Missing or invalid token
           content:
             application/json:
               schema:
