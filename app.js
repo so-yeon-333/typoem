@@ -12,6 +12,7 @@ const dictionaryRouter = require('./routes/dictionary');
 const { roomMemosRouter, memosRouter } = require('./routes/memos');
 const { roomAnnotationsRouter, annotationsRouter } = require('./routes/annotations');
 const publicRouter = require('./routes/public'); 
+const vocabRouter = require('./routes/vocab');
 
 const app = express();
 
@@ -34,6 +35,7 @@ app.use('/api/rooms', roomAnnotationsRouter);
 app.use('/api/annotations', annotationsRouter);
 app.use('/api/dictionary', dictionaryRouter);
 app.use('/api/public', publicRouter);   
+app.use('/api/vocab', vocabRouter);
 
 
 // API docs
