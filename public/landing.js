@@ -1,4 +1,3 @@
-
 // public/landing.js
 // Public landing (served at / by app.js). Logged-out visitors see one short poem;
 // logged-in visitors are sent straight to their rooms list.
@@ -16,12 +15,13 @@ function escapeHtml(str) {
 }
 
 // Translate PoetryDB's plain-text markup the same way P13 (room.js) does,
-// minus the dictionary word-wrapping (the landing preview has no popup):
+// minus the dictionary word-wrapping (the landing preview has no popup).
+// Used for the poem body AND the title/author (markers can appear in either):
 //   --      -> —  (em dash)
 //   _word_  -> <em>word</em>  (Project Gutenberg italics)
 // Text is escaped first so the markup can't inject HTML.
 function formatLine(text) {
-  let t = escapeHtml(text).replace(/-{2,}/g, '\u2014');   // em dash
+  let t = escapeHtml(text).replace(/-{2,}/g, '\u2014');   // em dash (2+ hyphens)
   t = t.replace(/_([^_]+)_/g, '<em>$1</em>');          // paired _italics_
   return t;
 }
@@ -42,8 +42,8 @@ async function loadPoem() {
     const poem = data.poem;
     const lines = Array.isArray(poem.lines) ? poem.lines : [];
 
-    titleEl.textContent = poem.title;
-    authorEl.textContent = poem.author;
+    titleEl.innerHTML = formatLine(poem.title || '');
+    authorEl.innerHTML = formatLine(poem.author || '');
     bodyEl.innerHTML = lines.map(renderLine).join('');
 
     statusEl.hidden = true;
