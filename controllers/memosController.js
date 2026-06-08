@@ -74,7 +74,7 @@ async function listMemos(req, res) {
         const poem_id = await model.findTodayPoemId(room_id, today());
         if (!poem_id) return res.status(200).json([]);
 
-        const memos = await model.listForRoomPoem(room_id, poem_id);
+        const memos = await model.listForRoomPoem(room_id, poem_id, req.user.id);
         res.status(200).json(memos);
     } catch (err) {
         console.error(err);
@@ -89,7 +89,7 @@ async function updateMemo(req, res) {
         const memo_id = parseId(req.params.id);
         if (!memo_id) return res.status(400).json({ error: "invalid memo id" });
 
-        const memo = await model.findById(memo_id);
+        const memo = await model.findById(memo_id, req.user.id);
         if (!memo) return res.status(404).json({ error: "Memo not found" });
 
         // only the author can edit
@@ -107,7 +107,7 @@ async function updateMemo(req, res) {
             return res.status(400).json({ error: "content must be 1-1000 characters" });
         }
 
-        const updated = await model.updateMemo(memo_id, trimmed);
+        const updated = await model.updateMemo(memo_id, trimmed, req.user.id);
         res.status(200).json(updated);
     } catch (err) {
         console.error(err);
@@ -122,7 +122,7 @@ async function deleteMemo(req, res) {
         const memo_id = parseId(req.params.id);
         if (!memo_id) return res.status(400).json({ error: "invalid memo id" });
 
-        const memo = await model.findById(memo_id);
+        const memo = await model.findById(memo_id, req.user.id);
         if (!memo) return res.status(404).json({ error: "Memo not found" });
 
         // only the author can delete
@@ -138,4 +138,26 @@ async function deleteMemo(req, res) {
     }
 }
 
-module.exports = { createMemo, listMemos, updateMemo, deleteMemo };
+// toggle a like on a memo
+// [POST] /api/memos/:id/like
+async function toggleLike(req, res) {
+    try {
+        const memo_id = parseId(req.params.id);
+        if (!memo_id) return res.status(400).json({ error: "invalid memo id" });
+
+        const memo = await model.findById(memo_id, req.user.id);
+        if (!memo) return res.status(404).json({ error: "Memo not found" });
+
+        // must be a member of the memo's room
+        const isMember = await roomsModel.isMember(memo.room_id, req.user.id);
+        if (!isMember) return res.status(403).json({ error: "You are not a member of this room" });
+
+        const result = await model.toggleLike(memo_id, req.user.id);
+        res.status(200).json(result);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Server error" });
+    }
+}
+
+module.exports = { createMemo, listMemos, updateMemo, deleteMemo, toggleLike };

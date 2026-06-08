@@ -306,7 +306,7 @@ describe("PATCH /api/memos/:id", () => {
     // Assert — update is a modification of an existing resource, so 200 (not 201).
     expect(res.statusCode).toBe(200);
     expect(res.body).toEqual(updated);
-    expect(memosModel.updateMemo).toHaveBeenCalledWith(7, "edited content");
+    expect(memosModel.updateMemo).toHaveBeenCalledWith(7, "edited content", 1);
   });
 });
 
@@ -355,5 +355,80 @@ describe("DELETE /api/memos/:id", () => {
     expect(res.statusCode).toBe(204);
     expect(res.body).toEqual({});
     expect(memosModel.deleteMemo).toHaveBeenCalledWith(7);
+  });
+});
+
+// -----------------------------------------------------------------------------
+// POST /api/memos/:id/like  — toggle like
+// -----------------------------------------------------------------------------
+describe("POST /api/memos/:id/like", () => {
+  test("returns 401 when no Authorization header is sent", async () => {
+    const res = await request(app).post("/api/memos/7/like");
+
+    expect(res.statusCode).toBe(401);
+    expect(memosModel.toggleLike).not.toHaveBeenCalled();
+  });
+
+  test("returns 404 when the memo does not exist", async () => {
+    // Arrange: lookup returns nothing.
+    memosModel.findById.mockResolvedValue(undefined);
+
+    // Act
+    const res = await request(app)
+      .post("/api/memos/999/like")
+      .set("Authorization", `Bearer ${token}`);
+
+    // Assert
+    expect(res.statusCode).toBe(404);
+    expect(memosModel.toggleLike).not.toHaveBeenCalled();
+  });
+
+  test("returns 403 when the user is not a member of the room", async () => {
+    // Arrange: memo exists, but the user is not a member of its room.
+    memosModel.findById.mockResolvedValue({ id: 7, user_id: 2, room_id: 5 });
+    roomsModel.isMember.mockResolvedValue(false);
+
+    // Act
+    const res = await request(app)
+      .post("/api/memos/7/like")
+      .set("Authorization", `Bearer ${token}`);
+
+    // Assert
+    expect(res.statusCode).toBe(403);
+    expect(memosModel.toggleLike).not.toHaveBeenCalled();
+  });
+
+  test("returns 200 and adds a like when not yet liked", async () => {
+    // Arrange: member; toggling adds a like.
+    memosModel.findById.mockResolvedValue({ id: 7, user_id: 2, room_id: 5 });
+    roomsModel.isMember.mockResolvedValue(true);
+    memosModel.toggleLike.mockResolvedValue({ liked: true, like_count: 1 });
+
+    // Act
+    const res = await request(app)
+      .post("/api/memos/7/like")
+      .set("Authorization", `Bearer ${token}`);
+
+    // Assert
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toEqual({ liked: true, like_count: 1 });
+    expect(memosModel.toggleLike).toHaveBeenCalledWith(7, 1);
+  });
+
+  test("returns 200 and removes a like when already liked", async () => {
+    // Arrange: member; toggling removes an existing like.
+    memosModel.findById.mockResolvedValue({ id: 7, user_id: 2, room_id: 5 });
+    roomsModel.isMember.mockResolvedValue(true);
+    memosModel.toggleLike.mockResolvedValue({ liked: false, like_count: 0 });
+
+    // Act
+    const res = await request(app)
+      .post("/api/memos/7/like")
+      .set("Authorization", `Bearer ${token}`);
+
+    // Assert
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toEqual({ liked: false, like_count: 0 });
+    expect(memosModel.toggleLike).toHaveBeenCalledWith(7, 1);
   });
 });
