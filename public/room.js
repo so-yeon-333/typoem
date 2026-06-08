@@ -251,8 +251,8 @@ function renderPoem(poem) {
     return;
   }
 
-  titleEl.textContent = poem.title || 'Untitled';
-  authorEl.textContent = poem.author ? `by ${poem.author}` : '';
+  titleEl.innerHTML = renderMeta(poem.title) || 'Untitled';
+  authorEl.innerHTML = poem.author ? `by ${renderMeta(poem.author)}` : '';
 
   const lines = Array.isArray(poem.lines) ? poem.lines : [];
   bodyEl.innerHTML = lines.map(renderLine).join('');
@@ -300,6 +300,15 @@ function renderLine(line) {
   `;
 }
 
+// Title/author markup. Same PoetryDB markers as the body (em dash + italics)
+// but WITHOUT the dictionary word-tokenising — title/author words aren't
+// clickable. innerHTML, so escapeHtml runs first.
+function renderMeta(text) {
+  return escapeHtml(text || '')
+    .replace(/-{2,}/g, '\u2014')          // em dash (2+ hyphens)
+    .replace(/_([^_]+)_/g, '<em>$1</em>'); // italics
+}
+
 // Render a poem line into clickable .word spans for the dictionary (P12),
 // while translating PoetryDB's plain-text markup:
 //   _word_  -> <em>word</em>   (Project Gutenberg italics convention)
@@ -307,7 +316,7 @@ function renderLine(line) {
 // Punctuation is split off the dictionary lookup so "And," looks up "and",
 // while the line still DISPLAYS the punctuation verbatim.
 function wrapWords(text) {
-  let t = text.replace(/-{2,}/g, '\u2014');   // 1) em dash, before tokenising
+  let t = text.replace(/-{2,}/g, '\u2014');   // 1) em dash (2+ hyphens), before tokenising
 
   // 2) Paired emphasis _..._ -> <em>...</em>. A lone/unmatched underscore is
   //    left as a literal character. Inner text is word-wrapped as usual, so
