@@ -252,23 +252,28 @@ The docs are served by loading the static `openapi.yaml` file with `yamljs` and 
 
 ---
 
-## Deployment
+## Deployment & CI/CD
 
-The application is deployed on **Render (free tier)** so it can be opened easily during evaluation.
+The application is deployed on Render (free tier) so it can be opened easily during evaluation.
 
-**Deployed URL**: https://typoem.onrender.com
+**Deployed URL:** https://typoem.onrender.com
+
+### Continuous Deployment (CD)
+Render is connected to this GitHub repository and auto-deploys on every push to `main`.
+Combined with GitHub Actions CI, the full pipeline is:
+
+`push / PR → GitHub Actions (CI: tests) → merge to main → Render auto-deploy (CD)`
+
+Every change that lands on `main` is tested by CI, then automatically built and released to the live URL with no manual step.
 
 ### Notes on Render's free tier
-
-- Render's free web service does not keep files saved on disk, so the SQLite database is wiped on every redeploy or after 15 minutes of inactivity.
-- To handle this, the app fills the database with a set of ready-made poems each time it starts, so there is always something to show.
-- User-created data (accounts, rooms, memos) is only kept between redeploys.
-- Free services go to sleep after 15 minutes of inactivity; the first request after that may take about 30 seconds to wake up.
+* Render's free web service does not persist files on disk, so the SQLite database is wiped on every redeploy and after periods of inactivity.
+* To handle this, the app seeds the database with a set of ready-made poems on every startup, so there is always something to show.
+* User-created data (accounts, rooms, memos) is therefore not persistent — it is kept only until the next redeploy or sleep.
+* Free services sleep after ~15 minutes of inactivity; the first request after that may take about 30 seconds to wake up.
 
 ### Running locally as a fallback
-
-If the deployed URL is unavailable, follow the [Setup](#setup) and [Running the App](#running-the-app) sections.
-
+If the deployed URL is unavailable, follow the [Setup](https://github.com/so-yeon-333/typoem#setup) and [Running the App](https://github.com/so-yeon-333/typoem#running-the-app) sections.
 ---
 
 ## Contributing
