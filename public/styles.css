@@ -550,6 +550,16 @@ hr {
   .rooms-grid { grid-template-columns: 1fr; }
   .actions { flex-direction: column; }
   .btn { width: 100%; }
+
+  /* Narrow phones: the invite code + Copy button must fit inside the card */
+  .auth-card { padding: 32px 20px; }
+  .invite-code-row .invite-code {
+    min-width: 0;            /* let the code box shrink instead of pushing Copy out */
+    font-size: 26px;
+    letter-spacing: 4px;
+    padding: 12px 8px;
+  }
+  .copy-btn { padding: 0 12px; }
 }
 
 
